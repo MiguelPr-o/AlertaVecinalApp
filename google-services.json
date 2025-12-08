@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11464769886",
+    "project_id": "alertaappp",
+    "storage_bucket": "alertaappp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11464769886:android:449b4c3e1378f6795b4fcf",
+        "android_client_info": {
+          "package_name": "mx.edu.utng.alertavecinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrc1HnHX7KwAVdhzOSflSDgJNF2oA84eE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
