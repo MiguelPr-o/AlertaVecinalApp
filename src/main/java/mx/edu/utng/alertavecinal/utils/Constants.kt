@@ -1,5 +1,12 @@
-// Constants.kt
 package mx.edu.utng.alertavecinal.utils
+
+/*
+Clase Constants: Este archivo centraliza todas las constantes y configuraciones
+de la aplicación en un solo lugar, incluyendo rutas de navegación, configuraciones
+de Firebase, formatos de fecha, parámetros de UI, límites de datos y valores por
+defecto. Sirve como fuente única de verdad para mantener consistencia y facilitar
+el mantenimiento en toda la aplicación.
+*/
 
 object Constants {
     // Rutas de navegación

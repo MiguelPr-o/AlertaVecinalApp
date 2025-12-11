@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.data.repository
 
+/*
+Clase MapRepository: Esta clase es el repositorio encargado de toda
+la lógica relacionada con ubicación y mapas en la aplicación. Gestiona
+la obtención de la ubicación actual del dispositivo usando los servicios
+de Google Play, verifica permisos, calcula distancias entre puntos y
+proporciona funciones para validar y formatear ubicaciones para mostrar al usuario.
+*/
+
 import android.Manifest
 import android.content.Context
 import android.location.Location
@@ -21,21 +29,17 @@ class MapRepository @Inject constructor(
 
     suspend fun getCurrentLocation(): LocationData? {
         return try {
-            // ✅ VERIFICACIÓN EXPLÍCITA DE PERMISO (arregla el error de Lint)
             if (!hasLocationPermission()) {
                 return null
             }
 
-            // ✅ VERIFICAR SI EL PERMISO HA SIDO DENEGADO POR EL USUARIO
             if (!PermissionUtils.hasLocationPermissions(context)) {
                 throw SecurityException("Los permisos de ubicación no fueron concedidos")
             }
 
-            // Intentar obtener ubicación
             getLocationWithTimeout()
 
         } catch (securityEx: SecurityException) {
-            // Manejo explícito de SecurityException
             securityEx.printStackTrace()
             null
         } catch (e: Exception) {
@@ -44,12 +48,9 @@ class MapRepository @Inject constructor(
         }
     }
 
-    /**
-     * Obtiene ubicación con manejo de permisos explícito
-     */
     private suspend fun getLocationWithTimeout(): LocationData? {
         return try {
-            // ✅ USAR checkSelfPermission ANTES de llamar a lastLocation
+            // checkSelfPermission ANTES de llamar a lastLocation
             val fineLocationPermission = ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -102,7 +103,7 @@ class MapRepository @Inject constructor(
         return results[0]
     }
 
-    // ✅ NUEVO MÉTODO: Obtener dirección desde coordenadas
+    // Obtener dirección desde coordenadas
     suspend fun getAddressFromLocation(latitude: Double, longitude: Double): String? {
         return try {
             // Implementación simplificada - puedes integrar Geocoder aquí
@@ -114,7 +115,7 @@ class MapRepository @Inject constructor(
         }
     }
 
-    // ✅ NUEVO MÉTODO: Verificar permisos de ubicación de forma segura
+    // Verificar permisos de ubicación de forma segura
     fun checkLocationPermissions(): Boolean {
         return try {
             PermissionUtils.hasLocationPermissions(context)
@@ -123,13 +124,12 @@ class MapRepository @Inject constructor(
         }
     }
 
-    // ✅ NUEVO MÉTODO: Obtener ubicación con callback para manejar falta de permisos
+    // Obtener ubicación con callback para manejar falta de permisos
     suspend fun getCurrentLocationWithCallback(
         onPermissionDenied: () -> Unit = {},
         onLocationUnavailable: () -> Unit = {}
     ): LocationData? {
         return try {
-            // Verificación explícita
             if (!hasLocationPermission()) {
                 onPermissionDenied()
                 return null
@@ -150,7 +150,7 @@ class MapRepository @Inject constructor(
         }
     }
 
-    // ✅ NUEVO MÉTODO: Obtener ubicación con dirección
+    // Obtener ubicación con dirección
     suspend fun getCurrentLocationWithAddress(): LocationData? {
         return try {
             val location = getCurrentLocation()
@@ -164,7 +164,7 @@ class MapRepository @Inject constructor(
         }
     }
 
-    // ✅ NUEVO MÉTODO: Calcular distancia entre dos LocationData
+    // Calcular distancia entre dos LocationData
     fun calculateDistanceBetween(location1: LocationData, location2: LocationData): Float {
         return calculateDistance(
             location1.latitude,
@@ -174,7 +174,7 @@ class MapRepository @Inject constructor(
         )
     }
 
-    // ✅ NUEVO MÉTODO: Formatear distancia para mostrar al usuario
+    // Formatear distancia para mostrar al usuario
     fun formatDistance(distanceInMeters: Float): String {
         return when {
             distanceInMeters < 1000 -> "${String.format("%.0f", distanceInMeters)} m"
@@ -182,14 +182,14 @@ class MapRepository @Inject constructor(
         }
     }
 
-    // ✅ NUEVO MÉTODO: Verificar si una ubicación es válida
+    // Verificar si una ubicación es válida
     fun isValidLocation(latitude: Double, longitude: Double): Boolean {
         return latitude != 0.0 && longitude != 0.0 &&
                 latitude >= -90 && latitude <= 90 &&
                 longitude >= -180 && longitude <= 180
     }
 
-    // ✅ NUEVO MÉTODO: Verificar si un LocationData es válido
+    // Verificar si un LocationData es válido
     fun isValidLocationData(locationData: LocationData?): Boolean {
         return locationData != null && isValidLocation(locationData.latitude, locationData.longitude)
     }

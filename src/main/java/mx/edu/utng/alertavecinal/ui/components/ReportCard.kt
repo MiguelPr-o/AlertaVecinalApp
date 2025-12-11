@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase ReportActionsModal: Este archivo contiene un conjunto de componentes
+modales y diálogos diseñados específicamente para las acciones de moderación
+de reportes. Incluye modales para aprobar, rechazar, solicitar más información
+y editar reportes, proporcionando interfaces especializadas para cada acción
+con campos de comentario y confirmación apropiados.
+*/
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +91,6 @@ fun ReportCard(
 
             Spacer(modifier = Modifier.size(4.dp))
 
-            // Descripción
             Text(
                 text = report.description,
                 style = MaterialTheme.typography.bodyMedium,
@@ -94,12 +101,10 @@ fun ReportCard(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            // Footer con ubicación y fecha
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Ubicación
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -121,7 +126,6 @@ fun ReportCard(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Fecha
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {

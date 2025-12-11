@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase CreateReportScreen: Esta pantalla permite a los usuarios crear nuevos
+reportes de incidentes en la aplicación. Proporciona un formulario completo
+con campos para tipo de incidente, título, descripción y selección de ubicación
+(ya sea automática mediante GPS o manual en el mapa). Valida todos los campos
+requeridos antes de enviar el reporte a la base de datos.
+*/
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +66,6 @@ import mx.edu.utng.alertavecinal.viewmodel.MapViewModel
 import mx.edu.utng.alertavecinal.viewmodel.ReportViewModel
 import kotlin.String
 
-// Estado local para el formulario de creación de reportes
 data class CreateReportFormState(
     val adrees:String="",
     val title: String = "",
@@ -94,7 +101,6 @@ fun CreateReportScreen(
     var showSuccessMessage by remember { mutableStateOf(false) }
     var locationAttempts by remember { mutableStateOf(0) }
 
-    // ✅✅✅ SOLO CAMBIO: Recuperar datos del ViewModel al iniciar
     LaunchedEffect(Unit) {
         val savedState = reportViewModel.createReportState
         if (savedState.title.isNotEmpty() || savedState.description.isNotEmpty() || savedState.selectedType != null) {
@@ -110,11 +116,9 @@ fun CreateReportScreen(
         }
     }
 
-    // ✅✅✅ SOLUCIÓN EXTREMA: Función para verificar la ubicación seleccionada
     fun checkForSelectedLocation() {
         println("📍 DEBUG CreateReport: Verificando ubicación seleccionada...")
 
-        // ✅ VERIFICAR EN MÚLTIPLES LUGARES
         val latLngFromPrevious = navController.previousBackStackEntry?.savedStateHandle?.get<LatLng>("selected_location")
         val latLngFromCurrent = navController.currentBackStackEntry?.savedStateHandle?.get<LatLng>("selected_location")
 
@@ -131,7 +135,6 @@ fun CreateReportScreen(
                 isLoadingLocation = false
             )
 
-            // ✅✅✅ SOLO CAMBIO: Guardar también en ViewModel
             reportViewModel.updateCreateReportState(
 
                 title = formState.title,
@@ -152,7 +155,6 @@ fun CreateReportScreen(
         }
     }
 
-    // ✅✅✅ SOLUCIÓN EXTREMA: Verificar la ubicación CADA VEZ que la pantalla se enfoque
     LaunchedEffect(Unit) {
         // Verificar inmediatamente al cargar la pantalla
         checkForSelectedLocation()
@@ -197,7 +199,6 @@ fun CreateReportScreen(
                     isLoadingLocation = false
                 )
 
-                // ✅✅✅ SOLO CAMBIO: Guardar también en ViewModel
                 reportViewModel.updateCreateReportState(
                     title = formState.title,
                     description = formState.description,
@@ -210,7 +211,6 @@ fun CreateReportScreen(
         }
     }
 
-    // Manejar errores de ubicación mejor
     LaunchedEffect(mapState.error) {
         mapState.error?.let { error ->
             if (error.contains("ubicación", ignoreCase = true) ||
@@ -336,7 +336,6 @@ fun CreateReportScreen(
                                     text = { Text(getReportTypeDisplayName(type)) },
                                     onClick = {
                                         formState = formState.copy(selectedType = type)
-                                        // ✅✅✅ SOLO CAMBIO: Guardar en ViewModel
                                         reportViewModel.updateCreateReportState(
                                             title = formState.title,
                                             description = formState.description,
@@ -362,12 +361,10 @@ fun CreateReportScreen(
                         )
                     }
 
-                    // Campo de título
                     CustomTextField(
                         value = formState.title,
                         onValueChange = { newTitle ->
                             formState = formState.copy(title = newTitle)
-                            // ✅✅✅ SOLO CAMBIO: Guardar en ViewModel
                             reportViewModel.updateCreateReportState(
                                 title = newTitle,
                                 description = formState.description,
@@ -383,7 +380,6 @@ fun CreateReportScreen(
                         isError = formState.title.isEmpty() && formState.isSubmitted
                     )
 
-                    // Mostrar error si el título está vacío
                     if (formState.title.isEmpty() && formState.isSubmitted) {
                         Text(
                             text = "El título es obligatorio",
@@ -393,12 +389,10 @@ fun CreateReportScreen(
                         )
                     }
 
-                    // Campo de descripción
                     CustomTextField(
                         value = formState.description,
                         onValueChange = { newDescription ->
                             formState = formState.copy(description = newDescription)
-                            // ✅✅✅ SOLO CAMBIO: Guardar en ViewModel
                             reportViewModel.updateCreateReportState(
                                 title = formState.title,
                                 description = newDescription,
@@ -416,7 +410,6 @@ fun CreateReportScreen(
                         isError = formState.description.isEmpty() && formState.isSubmitted
                     )
 
-                    // Mostrar error si la descripción está vacía
                     if (formState.description.isEmpty() && formState.isSubmitted) {
                         Text(
                             text = "La descripción es obligatoria",
@@ -426,14 +419,12 @@ fun CreateReportScreen(
                         )
                     }
 
-                    // Sección de ubicación
                     Text(
                         text = "Ubicación *",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    // Botón de ubicación actual con mejor feedback
                     CustomButton(
                         text = when {
                             formState.isLoadingLocation -> "Obteniendo ubicación..."
@@ -455,11 +446,9 @@ fun CreateReportScreen(
                         isLoading = formState.isLoadingLocation
                     )
 
-                    // ✅✅✅ CORREGIDO: Botón para elegir ubicación en el mapa
                     CustomButton(
                         text = "🗺️ Elegir ubicación en el mapa",
                         onClick = {
-                            // ✅ GUARDAR los datos ANTES de navegar
                             reportViewModel.updateCreateReportState(
                                 title = formState.title,
                                 description = formState.description,
@@ -468,7 +457,6 @@ fun CreateReportScreen(
                                 latitude = formState.latitude,
                                 longitude = formState.longitude
                             )
-                            // ✅ NAVEGAR a la ruta SIMPLE (sin parámetros)
                             navController.navigate(Constants.ROUTE_SELECT_LOCATION)
                         },
                         modifier = Modifier.fillMaxWidth(),
@@ -476,7 +464,6 @@ fun CreateReportScreen(
                         leadingIcon = Icons.Default.Map
                     )
 
-                    // Mostrar ubicación actual si está disponible
                     formState.currentLocation?.let { location ->
                         Column(
                             modifier = Modifier.padding(top = 8.dp)
@@ -487,7 +474,6 @@ fun CreateReportScreen(
                                 color = MaterialTheme.colorScheme.primary
                             )
 
-                            // Mostrar coordenadas reales
                             Text(
                                 text = "Coordenadas: ${String.format("%.6f", formState.latitude)}, ${String.format("%.6f", formState.longitude)}",
                                 style = MaterialTheme.typography.bodySmall,
@@ -497,7 +483,6 @@ fun CreateReportScreen(
                         }
                     }
 
-                    // Mostrar mensaje de error más específico
                     formState.locationError?.let { error ->
                         Column(
                             modifier = Modifier.padding(top = 8.dp)
@@ -521,12 +506,10 @@ fun CreateReportScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mostrar error del reporte si existe
                     reportState.error?.let { error ->
                         ErrorMessage(message = error)
                     }
 
-                    // Botón de enviar reporte
                     CustomButton(
                         text = if (reportState.isLoading) "Enviando..." else "Enviar Reporte",
                         onClick = {

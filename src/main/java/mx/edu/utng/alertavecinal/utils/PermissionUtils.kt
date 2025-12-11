@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase PermissionUtils: Este objeto maneja toda la gestión centralizada de permisos
+en tiempo de ejecución para la aplicación. Organiza los permisos requeridos por
+funcionalidad (ubicación, cámara, almacenamiento, notificaciones), proporciona
+métodos para verificar su estado, identifica permisos faltantes, y ofrece
+descripciones amigables para cada permiso. Simplifica la implementación de la
+lógica de permisos siguiendo las mejores prácticas de Android.
+*/
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager

@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase FormatUtils: Este objeto proporciona funciones de utilidad para
+formatear diferentes tipos de datos en toda la aplicación, incluyendo
+fechas, distancias, direcciones, nombres de usuario, números telefónicos
+y textos. Centraliza toda la lógica de formato para asegurar consistencia
+en la presentación de datos a lo largo de la interfaz de usuario.
+*/
+
+import mx.edu.utng.alertavecinal.data.model.ReportType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -121,4 +130,6 @@ object FormatUtils {
             else -> "${"%.1f".format(bytes / (1024.0 * 1024.0 * 1024.0))} GB"
         }
     }
+
+
 }

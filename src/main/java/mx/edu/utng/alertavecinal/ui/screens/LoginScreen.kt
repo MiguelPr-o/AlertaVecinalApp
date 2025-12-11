@@ -1,5 +1,12 @@
-// LoginScreen.kt (VERSIÓN COMPLETA ACTUALIZADA)
 package mx.edu.utng.alertavecinal.ui.screens
+
+/*
+Clase LoginScreen: Esta pantalla permite a los usuarios autenticarse
+en la aplicación mediante correo electrónico y contraseña. Valida las
+credenciales con Firebase Authentication, maneja diferentes roles de usuario
+(regular, moderador, administrador) y redirige a la pantalla apropiada según
+el rol después de un inicio de sesión exitoso.
+*/
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,7 +80,6 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var showDebugPanel by remember { mutableStateOf(false) }
 
-    // ✅ REDIRECCIÓN USANDO EL FLUJO DEL VIEWMODEL
     LaunchedEffect(shouldNavigate) {
         shouldNavigate?.let { destination ->
             println("🟢 LoginScreen - Redirigiendo a: $destination")
@@ -96,7 +102,6 @@ fun LoginScreen(
         }
     }
 
-    // ✅ REDIRECCIÓN ALTERNATIVA (backup)
     LaunchedEffect(authState.isAuthenticated) {
         if (authState.isAuthenticated && authState.currentUser != null && shouldNavigate == null) {
             println("⚠️ LoginScreen - Redirección alternativa activada")
@@ -150,7 +155,6 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Logo/Icono
                 Box(
                     modifier = Modifier
                         .size(80.dp)
@@ -170,7 +174,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Título
                 Text(
                     text = "Bienvenido de nuevo",
                     style = MaterialTheme.typography.headlineMedium,
@@ -188,7 +191,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Campo de email
                 CustomTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -200,7 +202,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Campo de contraseña
                 CustomTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -213,13 +214,11 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Mostrar error si existe
                 authState.error?.let { error ->
                     ErrorMessage(message = error)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Mostrar información del usuario si está autenticado
                 if (authState.isAuthenticated) {
                     Card(
                         modifier = Modifier
@@ -264,7 +263,6 @@ fun LoginScreen(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                 )
 
-                                // ✅ MOSTRAR ROL CORRECTAMENTE
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -294,7 +292,6 @@ fun LoginScreen(
                     }
                 }
 
-                // Botón de iniciar sesión
                 CustomButton(
                     text = if (authState.isLoading) "Iniciando sesión..." else "Iniciar Sesión",
                     onClick = {
@@ -310,7 +307,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Enlace a registro
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -333,7 +329,6 @@ fun LoginScreen(
                     )
                 }
 
-                // Loading indicator
                 if (authState.isLoading) {
                     Spacer(modifier = Modifier.height(16.dp))
                     CircularProgressIndicator(

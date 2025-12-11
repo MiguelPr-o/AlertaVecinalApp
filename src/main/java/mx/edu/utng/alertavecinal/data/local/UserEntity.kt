@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.data.local
 
+/*
+Clase UserEntity: Esta clase define la estructura de un usuario
+que se almacena en la base de datos local del dispositivo. Representa
+la tabla "users" en SQLite y contiene todos los datos del perfil del
+usuario, incluyendo información personal, preferencias de notificación
+y rol dentro de la aplicación.
+*/
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import mx.edu.utng.alertavecinal.data.model.UserRole

@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase EmptyState (Componentes de estados vacíos): Este archivo contiene componentes
+reutilizables para mostrar estados vacíos o sin datos en diferentes partes de la
+aplicación. Proporciona pantallas visualmente atractivas con íconos y mensajes
+descriptivos que se muestran cuando no hay contenido disponible, mejorando la
+experiencia del usuario durante situaciones de datos vacíos.
+*/
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

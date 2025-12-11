@@ -1,5 +1,13 @@
-// ModeratorReportReviewScreen.kt (VERSIÓN CORREGIDA)
 package mx.edu.utng.alertavecinal.ui.screens
+
+/*
+Clase ModeratorReportReviewScreen: Esta pantalla especializada permite a
+moderadores y administradores revisar reportes de incidentes en detalle y
+tomar acciones de moderación. Proporciona una vista completa del reporte
+con opciones para aprobar, rechazar, solicitar más información o editar
+el contenido, incluyendo diálogos especializados para cada acción con campos de
+comentarios y validaciones.
+*/
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -85,7 +93,6 @@ fun ModeratorReportReviewScreen(
 ) {
     val viewModel: ModeratorViewModel = hiltViewModel()
 
-    // Obtener el reporte específico
     val report by viewModel.getReportById(reportId).collectAsState(initial = null)
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
@@ -100,7 +107,6 @@ fun ModeratorReportReviewScreen(
     var editDescription by remember { mutableStateOf("") }
     var selectedEditType by remember { mutableStateOf<ReportType?>(null) }
 
-    // Cargar el reporte al iniciar
     LaunchedEffect(reportId) {
         viewModel.loadReportById(reportId)
     }
@@ -176,36 +182,30 @@ fun ModeratorReportReviewScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // Mostrar mensajes de error
                     errorMessage?.let { message ->
                         ErrorMessage(message = message)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
-                    // Header con tipo y estado
                     ReportHeaderSection(report = currentReport)
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Información básica
                     ReportInfoSection(report = currentReport)
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Imágenes (si existen)
                     if (currentReport.imageUrl != null) {
                         ReportImageSection(imageUrl = currentReport.imageUrl)
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    // Historia de moderación (si existe)
                     if (currentReport.approvedBy != null || currentReport.rejectionReason != null) {
                         ModerationHistorySection(report = currentReport)
                     }
                 }
             }
 
-            // Diálogo de aprobación
             if (showApproveDialog) {
                 ApproveReportDialog(
                     onConfirm = {
@@ -222,7 +222,6 @@ fun ModeratorReportReviewScreen(
                 )
             }
 
-            // Diálogo de rechazo
             if (showRejectDialog) {
                 RejectReportDialog(
                     reason = rejectReason,
@@ -245,7 +244,6 @@ fun ModeratorReportReviewScreen(
                 )
             }
 
-            // Diálogo de solicitud de información
             if (showRequestInfoDialog) {
                 RequestInfoDialog(
                     message = requestMessage,
@@ -267,7 +265,6 @@ fun ModeratorReportReviewScreen(
                 )
             }
 
-            // Diálogo de edición
             if (showEditDialog && report != null) {
                 EditReportDialog(
                     currentReport = report!!,
@@ -304,8 +301,6 @@ fun ModeratorReportReviewScreen(
     }
 }
 
-// El resto del código se mantiene igual hasta el final...
-
 @Composable
 private fun BottomActionBar(
     onApproveClick: () -> Unit,
@@ -328,7 +323,6 @@ private fun BottomActionBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Botón de aprobar
             CustomButton(
                 text = "Aprobar",
                 onClick = onApproveClick,
@@ -337,7 +331,6 @@ private fun BottomActionBar(
                 leadingIcon = Icons.Default.CheckCircle
             )
 
-            // Botón de rechazar
             CustomButton(
                 text = "Rechazar",
                 onClick = onRejectClick,
@@ -346,7 +339,6 @@ private fun BottomActionBar(
                 leadingIcon = Icons.Default.Close
             )
 
-            // Botón de solicitar info
             CustomOutlinedButton(
                 text = "Más Info",
                 onClick = onRequestInfoClick,
@@ -354,7 +346,6 @@ private fun BottomActionBar(
                 leadingIcon = Icons.Default.Info
             )
 
-            // Botón de editar
             CustomOutlinedButton(
                 text = "Editar",
                 onClick = onEditClick,
@@ -456,7 +447,6 @@ private fun ReportInfoSection(report: Report) {
 
             Divider()
 
-            // Ubicación
             InfoRow(
                 icon = Icons.Default.LocationOn,
                 title = "Ubicación",
@@ -465,7 +455,6 @@ private fun ReportInfoSection(report: Report) {
 
             Divider()
 
-            // Fecha
             InfoRow(
                 icon = Icons.Default.Schedule,
                 title = "Fecha y Hora",
@@ -474,7 +463,6 @@ private fun ReportInfoSection(report: Report) {
 
             Divider()
 
-            // Coordenadas
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween

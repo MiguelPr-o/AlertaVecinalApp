@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.data.model
 
+/*
+Clase LocationData: Esta clase representa una ubicación geográfica
+dentro de la aplicación, almacenando coordenadas de latitud y longitud
+junto con una dirección opcional. Proporciona métodos para convertir
+entre formatos de cadena de texto y objetos, facilitando el manejo
+de ubicaciones en toda la aplicación.
+ */
+
 data class LocationData(
     val latitude: Double,
     val longitude: Double,

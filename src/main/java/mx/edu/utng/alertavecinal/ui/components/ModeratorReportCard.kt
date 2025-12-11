@@ -1,5 +1,12 @@
-// ModeratorReportCard.kt
 package mx.edu.utng.alertavecinal.ui.components
+
+/*
+Clase ModeratorReportCard: Este componente muestra una tarjeta de reporte
+especialmente diseñada para moderadores y administradores, con información
+detallada del incidente incluyendo tipo, estado, descripción, usuario
+reportero, ubicación y fecha. Proporciona visualización clara del estado
+de moderación y permite la navegación a detalles del reporte mediante clic.
+*/
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,13 +65,11 @@ fun ModeratorReportCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header con tipo y estado
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Tipo de incidente con ícono
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -83,7 +88,6 @@ fun ModeratorReportCard(
                     )
                 }
 
-                // Badge de estado (solo si showStatus es true)
                 if (showStatus) {
                     ReportStatusBadge(status = report.status)
                 }
@@ -91,7 +95,6 @@ fun ModeratorReportCard(
 
             Spacer(modifier = Modifier.size(8.dp))
 
-            // Título
             Text(
                 text = report.title,
                 style = MaterialTheme.typography.titleSmall,
@@ -102,7 +105,6 @@ fun ModeratorReportCard(
 
             Spacer(modifier = Modifier.size(4.dp))
 
-            // Descripción
             Text(
                 text = report.description,
                 style = MaterialTheme.typography.bodyMedium,
@@ -113,7 +115,6 @@ fun ModeratorReportCard(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            // Información del usuario
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
@@ -132,7 +133,6 @@ fun ModeratorReportCard(
                 )
             }
 
-            // Información de ubicación
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)

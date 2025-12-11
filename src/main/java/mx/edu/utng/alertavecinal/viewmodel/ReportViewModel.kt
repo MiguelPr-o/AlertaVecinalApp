@@ -1,12 +1,27 @@
 package mx.edu.utng.alertavecinal.viewmodel
 
+/*
+Clase ReportViewModel: ViewModel central para la gestión completa de reportes
+de incidentes en la aplicación. Maneja la creación, consulta, filtrado y
+modificación de reportes, exponiendo múltiples StateFlows separados para
+todos los reportes, reportes pendientes y reportes del usuario actual.
+Implementa un sistema de formulario para creación de reportes con estado
+persistente, integra sincronización automática con Firebase, y proporciona
+funcionalidades de filtrado por tipo y estado. Se utiliza tanto para usuarios
+normales como para moderadores, manteniendo una arquitectura flexible.
+*/
+
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mx.edu.utng.alertavecinal.data.model.Report
 import mx.edu.utng.alertavecinal.data.model.ReportState
 import mx.edu.utng.alertavecinal.data.model.ReportStatus
@@ -19,12 +34,10 @@ class ReportViewModel @Inject constructor(
     private val reportRepository: ReportRepository
 ) : ViewModel() {
 
-    // Estados separados para cada tipo de reporte
     private val _allReports = MutableStateFlow<List<Report>>(emptyList())
     private val _pendingReports = MutableStateFlow<List<Report>>(emptyList())
     private val _userReports = MutableStateFlow<List<Report>>(emptyList())
 
-    // ✅ NUEVO: Exponer como StateFlow para las Screens
     val allReportsState: StateFlow<List<Report>> = _allReports.asStateFlow()
     val pendingReportsState: StateFlow<List<Report>> = _pendingReports.asStateFlow()
     val userReportsState: StateFlow<List<Report>> = _userReports.asStateFlow()
@@ -51,7 +64,6 @@ class ReportViewModel @Inject constructor(
         syncWithFirebase()
     }
 
-    // ✅ CORREGIDO: Sincronizar con Firebase al iniciar
     private fun syncWithFirebase() {
         viewModelScope.launch {
             reportRepository.syncReports()
@@ -61,7 +73,6 @@ class ReportViewModel @Inject constructor(
         }
     }
 
-    // ✅ NUEVO: Método para actualizar el estado del formulario
     fun updateCreateReportState(
         title: String = _createReportState.value.title,
         description: String = _createReportState.value.description,
@@ -80,7 +91,6 @@ class ReportViewModel @Inject constructor(
         )
     }
 
-    // ✅ NUEVO: Método para limpiar el estado después de enviar
     fun clearCreateReportState() {
         _createReportState.value = CreateReportState()
     }
@@ -101,7 +111,6 @@ class ReportViewModel @Inject constructor(
         viewModelScope.launch {
             reportRepository.getPendingReports().collect { reports ->
                 _pendingReports.value = reports
-                // ✅ CORREGIDO: Actualizar el reportState también
                 _reportState.value = _reportState.value.copy(
                     reports = reports,
                     filteredReports = applyFilters(reports)
@@ -122,7 +131,6 @@ class ReportViewModel @Inject constructor(
         }
     }
 
-    // ✅ NUEVO: Método para eliminar reporte
     fun deleteReport(reportId: String, userId: String) {
         viewModelScope.launch {
             _reportState.value = _reportState.value.copy(isLoading = true)
@@ -289,12 +297,135 @@ class ReportViewModel @Inject constructor(
         }
     }
 
-    // ✅ NUEVO: Forzar sincronización
     fun forceSync() {
         viewModelScope.launch {
             reportRepository.syncReports()
             loadAllReports()
             loadPendingReports()
+        }
+    }
+
+    // En ReportViewModel.kt - Agrega esta función
+    fun getReportById(reportId: String) {
+        viewModelScope.launch {
+            Log.d("ReportViewModel", "🔄 INICIANDO getReportById: $reportId")
+            _reportState.value = _reportState.value.copy(isLoading = true)
+
+            try {
+                // Usar el repositorio
+                val report = reportRepository.getReportById(reportId)
+
+                if (report != null) {
+                    Log.d("ReportViewModel", "✅ Reporte obtenido: ${report.title}")
+                    _reportState.value = _reportState.value.copy(
+                        selectedReport = report,
+                        isLoading = false,
+                        error = null
+                    )
+                } else {
+                    Log.d("ReportViewModel", "❌ Reporte NO encontrado")
+                    _reportState.value = _reportState.value.copy(
+                        selectedReport = null,
+                        isLoading = false,
+                        error = "Reporte no encontrado"
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("ReportViewModel", "💥 Error: ${e.message}", e)
+                _reportState.value = _reportState.value.copy(
+                    isLoading = false,
+                    error = "Error: ${e.message ?: "Error desconocido"}"
+                )
+            }
+        }
+    }
+
+    fun loadReportById(reportId: String) {
+        viewModelScope.launch {
+            Log.d("ReportViewModel", "🔄 INICIANDO loadReportById: $reportId")
+            _reportState.value = _reportState.value.copy(isLoading = true)
+
+            try {
+                Log.d("ReportViewModel", "📞 Llamando a repository.getReportById")
+                val report = reportRepository.getReportById(reportId)
+                Log.d("ReportViewModel", "📦 Reporte obtenido: ${report?.id ?: "NULL"}")
+
+                if (report != null) {
+                    Log.d("ReportViewModel", "✅ Reporte cargado: ${report.title}")
+                    _reportState.value = _reportState.value.copy(
+                        selectedReport = report,
+                        isLoading = false,
+                        error = null
+                    )
+                } else {
+                    Log.d("ReportViewModel", "❌ Reporte NO encontrado en repository")
+                    _reportState.value = _reportState.value.copy(
+                        selectedReport = null,
+                        isLoading = false,
+                        error = "Reporte no encontrado"
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("ReportViewModel", "💥 ERROR en loadReportById", e)
+                _reportState.value = _reportState.value.copy(
+                    isLoading = false,
+                    error = "Error: ${e.message}"
+                )
+            }
+        }
+    }
+
+
+    // Versión alternativa en ReportViewModel
+    fun loadReportDirectly(reportId: String) {
+        viewModelScope.launch {
+            _reportState.value = _reportState.value.copy(isLoading = true)
+
+            try {
+                // 1. Intentar cargar usando el repositorio
+                val report = withContext(Dispatchers.IO) {
+                    // Forzar una carga sincrónica
+                    runCatching {
+                        // Aquí necesitarías una función sincrónica en el repositorio
+                        // Por ahora, usemos un enfoque diferente
+                        null
+                    }.getOrNull()
+                }
+
+                // 2. Si falla, intentar de las listas existentes
+                if (report == null) {
+                    val allReports = _allReports.value
+                    val foundReport = allReports.find { it.id == reportId }
+
+                    if (foundReport != null) {
+                        _reportState.value = _reportState.value.copy(
+                            selectedReport = foundReport,
+                            isLoading = false
+                        )
+                    } else {
+                        // 3. Intentar recargar todas las listas
+                        loadAllReports()
+                        loadPendingReports()
+
+                        // Esperar un momento y verificar de nuevo
+                        delay(500)
+
+                        val updatedReports = _allReports.value
+                        val finalReport = updatedReports.find { it.id == reportId }
+
+                        _reportState.value = _reportState.value.copy(
+                            selectedReport = finalReport,
+                            isLoading = false,
+                            error = if (finalReport == null) "Reporte no encontrado" else null
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _reportState.value = _reportState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Error desconocido"
+                )
+            }
         }
     }
 }

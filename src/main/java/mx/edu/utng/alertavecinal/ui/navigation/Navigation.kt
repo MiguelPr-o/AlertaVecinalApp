@@ -1,6 +1,15 @@
-// Navigation.kt (VERSIÓN CORREGIDA - CON SOLUCIÓN)
-// Navigation.kt (VERSIÓN CORREGIDA - SOLUCIÓN DEFINITIVA)
 package mx.edu.utng.alertavecinal.ui.navigation
+
+/*
+Clase Navigation: Esta clase define toda la estructura de navegación
+de la aplicación utilizando Jetpack Navigation Compose. Gestiona las
+rutas entre todas las pantallas, controla el acceso basado en autenticación
+y roles de usuario (usuario regular vs moderador/administrador), y proporciona
+funciones de extensión para navegar fácilmente entre pantallas desde cualquier
+parte de la app.
+
+
+*/
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -136,11 +145,8 @@ fun AppNavigation(
             }
         }
 
-        // ✅ CORREGIDO: Moderator Dashboard
         composable(Constants.ROUTE_MODERATOR_DASHBOARD) {
-            // IMPORTANTE: Para pruebas, permite acceso sin autenticación
             if (BuildConfig.DEBUG) {
-                // En modo DEBUG, permitir acceso sin verificar autenticación
                 ModeratorDashboardScreen(
                     navController = navController,
                     authViewModel = authViewModel,
@@ -181,7 +187,6 @@ fun AppNavigation(
         }
 
 
-        // ✅ CORREGIDO: Moderator Review - SIN REDIRECCIÓN AUTOMÁTICA A LOGIN
         composable(
             "${Constants.ROUTE_MODERATOR_REVIEW}/{${Constants.KEY_REPORT_ID}}/{${Constants.KEY_MODERATOR_ID}}/{${Constants.KEY_MODERATOR_NAME}}",
             arguments = listOf(
@@ -190,7 +195,6 @@ fun AppNavigation(
                 navArgument(Constants.KEY_MODERATOR_NAME) { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            // ✅ NO VERIFICAR AUTENTICACIÓN AQUÍ - Dejar que la pantalla maneje su propia lógica
             val reportId = backStackEntry.arguments?.getString(Constants.KEY_REPORT_ID) ?: ""
             val moderatorId = backStackEntry.arguments?.getString(Constants.KEY_MODERATOR_ID) ?: ""
             val moderatorName = backStackEntry.arguments?.getString(Constants.KEY_MODERATOR_NAME) ?: ""
@@ -207,11 +211,6 @@ fun AppNavigation(
         }
     }
 }
-
-// ✅ FUNCIONES DE EXTENSIÓN PARA NAVEGACIÓN
-// ... (las mismas funciones de extensión que ya tienes) ...
-
-// ✅ FUNCIONES DE EXTENSIÓN PARA NAVEGACIÓN (ACTUALIZADAS)
 
 // Función para navegar a selección de ubicación
 fun NavHostController.navigateToSelectLocation() {
@@ -263,7 +262,6 @@ fun NavHostController.navigateToReportDetail(reportId: String) {
     }
 }
 
-// ✅ NUEVAS FUNCIONES PARA MODERADOR
 fun NavHostController.navigateToModeratorDashboard() {
     navigate(Constants.ROUTE_MODERATOR_DASHBOARD) {
         // Limpiar stack si venimos de login
@@ -282,7 +280,6 @@ fun NavHostController.navigateToModeratorReview(
     }
 }
 
-// Funciones de navegación generales
 fun NavHostController.navigateBack() {
     popBackStack()
 }
@@ -293,7 +290,6 @@ fun NavHostController.navigateToWelcomeAndClearStack() {
     }
 }
 
-// Función para determinar la pantalla de inicio según el rol
 fun getStartDestinationByRole(userRole: String?): String {
     return when (userRole) {
         Constants.  ROLE_MODERATOR, Constants.ROLE_ADMIN -> Constants.ROUTE_MODERATOR_DASHBOARD

@@ -1,5 +1,16 @@
 package mx.edu.utng.alertavecinal
 
+/*
+Clase MainActivity: Actividad principal de la aplicación que configura
+el contenido Compose y maneja la lógica de inicio. Configurada con
+@AndroidEntryPoint para habilitar la inyección de dependencias Hilt.
+Implementa la solicitud de permisos de ubicación mediante un
+ActivityResultContract, establece el tema de la aplicación y
+muestra el sistema de navegación principal (AppNavigation) dentro
+de un Surface. También contiene la lógica para solicitar permisos
+automáticamente al iniciar la aplicación.
+*/
+
 import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,7 +33,6 @@ import mx.edu.utng.alertavecinal.viewmodel.AuthViewModel
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    // ✅ NUEVO: Registrar para solicitar permisos de ubicación
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -58,9 +68,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
-
-    // ✅ NUEVO: Función para solicitar permisos de ubicación
     private fun requestLocationPermissions() {
         locationPermissionRequest.launch(
             arrayOf(
@@ -70,5 +77,4 @@ class MainActivity : ComponentActivity() {
         )
     }
 }
-
 

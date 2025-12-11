@@ -1,5 +1,15 @@
-// ModeratorViewModel.kt
 package mx.edu.utng.alertavecinal.viewmodel
+
+/*
+Clase ModeratorViewModel: ViewModel especializado para la gestión de moderadores
+y administradores de la aplicación. Maneja toda la lógica relacionada con la
+revisión, aprobación y rechazo de reportes de incidentes. Organiza los reportes
+en tres categorías principales (pendientes, aprobados, rechazados), calcula
+estadísticas de moderación, y proporciona funcionalidades avanzadas como
+solicitar más información, editar reportes y filtrar por tipo. Expone múltiples
+StateFlows para cada estado y mantiene separación clara de responsabilidades
+en la moderación de contenido.
+*/
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -46,7 +56,6 @@ class ModeratorViewModel @Inject constructor(
         loadAllModeratorData()
     }
 
-    // Cargar todos los datos necesarios para el moderador
     fun loadAllModeratorData() {
         loadPendingReports()
         loadApprovedReports()
@@ -54,7 +63,6 @@ class ModeratorViewModel @Inject constructor(
         calculateStats()
     }
 
-    // Cargar reportes pendientes
     fun loadPendingReports() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -74,7 +82,6 @@ class ModeratorViewModel @Inject constructor(
     fun loadApprovedReports() {
         viewModelScope.launch {
             try {
-                // Obtener todos los reportes y filtrar los aprobados
                 reportRepository.getAllReports().collect { reports ->
                     _approvedReports.value = reports.filter { it.status == ReportStatus.APPROVED }
                 }
@@ -84,11 +91,9 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Cargar reportes rechazados
     fun loadRejectedReports() {
         viewModelScope.launch {
             try {
-                // Obtener todos los reportes y filtrar los rechazados
                 reportRepository.getAllReports().collect { reports ->
                     _rejectedReports.value = reports.filter { it.status == ReportStatus.REJECTED }
                 }
@@ -98,7 +103,6 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Aprobar un reporte
     fun approveReport(
         reportId: String,
         moderatorId: String,
@@ -118,11 +122,9 @@ class ModeratorViewModel @Inject constructor(
 
                 result.fold(
                     onSuccess = {
-                        // Actualizar listas
                         loadAllModeratorData()
                         _errorMessage.value = null
 
-                        // Limpiar reporte seleccionado si es el mismo
                         if (_selectedReport.value?.id == reportId) {
                             _selectedReport.value = null
                         }
@@ -139,7 +141,6 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Rechazar un reporte
     fun rejectReport(
         reportId: String,
         moderatorId: String,
@@ -158,11 +159,9 @@ class ModeratorViewModel @Inject constructor(
 
                 result.fold(
                     onSuccess = {
-                        // Actualizar listas
                         loadAllModeratorData()
                         _errorMessage.value = null
 
-                        // Limpiar reporte seleccionado si es el mismo
                         if (_selectedReport.value?.id == reportId) {
                             _selectedReport.value = null
                         }
@@ -179,7 +178,6 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Solicitar más información
     fun requestMoreInfo(
         reportId: String,
         moderatorId: String,
@@ -203,7 +201,6 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Editar reporte
     fun editReport(
         reportId: String,
         title: String? = null,
@@ -247,17 +244,14 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Seleccionar reporte para revisión detallada
     fun selectReport(report: Report) {
         _selectedReport.value = report
     }
 
-    // Limpiar reporte seleccionado
     fun clearSelectedReport() {
         _selectedReport.value = null
     }
 
-    // Calcular estadísticas
     private fun calculateStats() {
         viewModelScope.launch {
             val pending = _pendingReports.value.size
@@ -294,7 +288,6 @@ class ModeratorViewModel @Inject constructor(
         return totalResponseTime / (approvedReports.size * 60000) // Convertir a minutos
     }
 
-    // Filtrar reportes por tipo
     fun filterReportsByType(type: String?) {
         viewModelScope.launch {
             if (type == null) {
@@ -311,14 +304,10 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // Limpiar mensajes de error
     fun clearError() {
         _errorMessage.value = null
     }
 
-    // En ModeratorViewModel.kt, añade estas funciones:
-
-    // Obtener un reporte específico por ID
     fun getReportById(reportId: String): StateFlow<Report?> {
         val reportFlow = MutableStateFlow<Report?>(null)
 
@@ -336,12 +325,10 @@ class ModeratorViewModel @Inject constructor(
         return reportFlow.asStateFlow()
     }
 
-    // Cargar un reporte específico
     fun loadReportById(reportId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // Buscar el reporte en las listas existentes
                 val allReports = _pendingReports.value + _approvedReports.value + _rejectedReports.value
                 val foundReport = allReports.find { it.id == reportId }
 
@@ -363,11 +350,9 @@ class ModeratorViewModel @Inject constructor(
         }
     }
 
-    // También necesitas exponer el selectedReport como StateFlow público:
     val selectedReport: StateFlow<Report?> = _selectedReport.asStateFlow()
 }
 
-// Clase para estadísticas del moderador
 data class ModeratorStats(
     val pendingCount: Int = 0,
     val approvedCount: Int = 0,

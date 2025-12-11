@@ -1,5 +1,15 @@
 package mx.edu.utng.alertavecinal.viewmodel
 
+/*
+Clase LocationSelectionViewModel: ViewModel especializado en la gestión y
+selección de ubicaciones dentro de la aplicación. Controla la obtención de
+la ubicación actual del dispositivo, permite la selección manual de ubicaciones
+en el mapa, y gestiona la geocodificación inversa para obtener direcciones
+amigables. Expone un estado observable que refleja la ubicación seleccionada,
+la ubicación actual, el estado de carga y posibles errores, proporcionando
+una API limpia para cualquier pantalla que requiera selección de ubicación.
+*/
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -62,7 +72,6 @@ class LocationSelectionViewModel @Inject constructor(
             error = null
         )
 
-        // Intentar obtener la dirección de la ubicación seleccionada
         getAddressForLocation(location)
     }
 

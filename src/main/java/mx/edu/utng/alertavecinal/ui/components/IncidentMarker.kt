@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase IncidentMarker: Este componente crea un marcador personalizado en
+el mapa para representar un reporte o incidente. Asigna diferentes colores
+a los marcadores según el tipo de reporte (robo, incendio, accidente, etc.)
+y proporciona interacción mediante clics para mostrar detalles del incidente
+en el mapa de la aplicación.
+*/
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.BitmapDescriptorFactory

@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase MapScreen: Esta es la pantalla principal de la aplicación que muestra
+un mapa interactivo con todos los reportes de incidentes aprobados y pendientes
+en el área. Permite a los usuarios ver reportes cercanos, navegar a detalles,
+crear nuevos reportes, actualizar la ubicación actual y acceder a configuraciones
+del perfil, proporcionando una vista general de la actividad de seguridad en la comunidad.
+*/
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -47,11 +55,11 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import mx.edu.utng.alertavecinal.data.model.ReportStatus
 import mx.edu.utng.alertavecinal.data.model.ReportType
 import mx.edu.utng.alertavecinal.ui.components.LoadingIndicator
+import mx.edu.utng.alertavecinal.utils.Constants
 import mx.edu.utng.alertavecinal.utils.NotificationUtils
 import mx.edu.utng.alertavecinal.viewmodel.AuthViewModel
 import mx.edu.utng.alertavecinal.viewmodel.MapViewModel
 
-// Función para obtener color del marcador según el tipo de reporte
 fun getMarkerColor(reportType: ReportType): Float {
     return when (reportType) {
         ReportType.ROBBERY -> BitmapDescriptorFactory.HUE_RED
@@ -66,7 +74,6 @@ fun getMarkerColor(reportType: ReportType): Float {
     }
 }
 
-// ✅ NUEVA FUNCIÓN: Obtener color según estado del reporte
 fun getMarkerColorByStatus(status: ReportStatus): Float {
     return when (status) {
         ReportStatus.APPROVED -> BitmapDescriptorFactory.HUE_GREEN
@@ -75,7 +82,6 @@ fun getMarkerColorByStatus(status: ReportStatus): Float {
     }
 }
 
-// Función para obtener el nombre legible del tipo de reporte
 fun getReportTypeName(reportType: ReportType): String {
     return when (reportType) {
         ReportType.ROBBERY -> "Robo"
@@ -90,7 +96,6 @@ fun getReportTypeName(reportType: ReportType): String {
     }
 }
 
-// ✅ NUEVA FUNCIÓN: Obtener emoji según estado
 fun getStatusEmoji(status: ReportStatus): String {
     return when (status) {
         ReportStatus.APPROVED -> "✅"
@@ -111,7 +116,6 @@ fun MapScreen(
 
     var showMenu by remember { mutableStateOf(false) }
 
-    // ✅ CORREGIDO: Sin CDMX por defecto
     var cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             mapState.currentLocation ?: LatLng(0.0, 0.0), // Ubicación neutral
@@ -119,21 +123,18 @@ fun MapScreen(
         )
     }
 
-    // ✅ NUEVO: Crear canales de notificación al iniciar
     LaunchedEffect(Unit) {
         NotificationUtils.createNotificationChannels(context)
     }
 
-    // Actualizar cámara cuando cambia la ubicación
     LaunchedEffect(mapState.currentLocation) {
         mapState.currentLocation?.let { location ->
             cameraPositionState.position = CameraPosition.fromLatLngZoom(location, 12f)
         }
     }
 
-    // ✅ CORREGIDO: Cargar TODOS los reportes al iniciar
     LaunchedEffect(Unit) {
-        viewModel.loadAllReports() // ✅ Esto carga TODOS los reportes, no solo los del usuario
+        viewModel.loadAllReports()
         viewModel.getCurrentLocation()
     }
 
@@ -150,11 +151,9 @@ fun MapScreen(
                     )
                 },
                 actions = {
-                    // Botón de actualizar
                     IconButton(
                         onClick = {
                             viewModel.refreshData()
-                            // ✅ NUEVO: Notificación de actualización
                             NotificationUtils.showSimpleNotification(
                                 context,
                                 "Mapa Actualizado",
@@ -205,7 +204,6 @@ fun MapScreen(
         },
         floatingActionButton = {
             Box {
-                // FAB para crear reporte
                 ExtendedFloatingActionButton(
                     onClick = {
                         navController.navigate("create_report")
@@ -264,31 +262,31 @@ fun MapScreen(
                         )
                     }
 
-                    // ✅ CORREGIDO: Mostrar TODOS los reportes APPROVED y PENDING (de todos los usuarios)
+                    // Mostrar TODOS los reportes APPROVED y PENDING (de todos los usuarios)
                     mapState.reports.forEach { report ->
                         val reportLocation = LatLng(
                             report.latitude,
                             report.longitude
                         )
 
-                        // ✅ SOLO mostrar reportes APPROVED y PENDING (no mostrar REJECTED)
+                        // SOLO mostrar reportes APPROVED y PENDING (no mostrar REJECTED)
                         if (report.status == ReportStatus.APPROVED || report.status == ReportStatus.PENDING) {
                             Marker(
                                 state = MarkerState(position = reportLocation),
                                 title = "${getStatusEmoji(report.status)} ${report.title}",
                                 snippet = "Por: ${report.userName} - ${getReportTypeName(report.reportType)}",
                                 icon = BitmapDescriptorFactory.defaultMarker(
-                                    getMarkerColorByStatus(report.status) // ✅ Color por estado
+                                    getMarkerColorByStatus(report.status)
                                 ),
                                 onInfoWindowClick = {
-                                    navController.navigate("report_detail/${report.id}")
+                                    navController.navigate("${Constants.ROUTE_REPORT_DETAIL}/${report.id}")
                                 }
                             )
                         }
                     }
                 }
 
-                // ✅ NUEVO: Mostrar mensaje si no hay ubicación
+                // Mostrar mensaje si no hay ubicación
                 if (mapState.currentLocation == null && !mapState.isLoading) {
                     Box(
                         modifier = Modifier
@@ -303,7 +301,7 @@ fun MapScreen(
                     }
                 }
 
-                // ✅ NUEVO: Mostrar estadísticas de reportes (de TODOS los usuarios)
+                // Mostrar estadísticas de reportes (de TODOS los usuarios)
                 val approvedCount = mapState.reports.count { it.status == ReportStatus.APPROVED }
                 val pendingCount = mapState.reports.count { it.status == ReportStatus.PENDING }
                 val totalCount = mapState.reports.size
@@ -323,7 +321,7 @@ fun MapScreen(
                     }
                 }
 
-                // ✅ NUEVO: Mostrar mensaje si no hay reportes
+                // Mostrar mensaje si no hay reportes
                 if (mapState.reports.isEmpty() && !mapState.isLoading) {
                     Box(
                         modifier = Modifier
@@ -340,7 +338,6 @@ fun MapScreen(
                 }
             }
 
-            // Mostrar error si existe
             mapState.error?.let { error ->
                 Snackbar(
                     action = {
@@ -360,6 +357,7 @@ fun MapScreen(
         }
     }
 }
+
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable

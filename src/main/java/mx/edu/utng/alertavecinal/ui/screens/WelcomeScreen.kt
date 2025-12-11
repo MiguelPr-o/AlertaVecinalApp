@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase WelcomeScreen: Esta es la pantalla inicial de la aplicación que da
+la bienvenida a los usuarios y presenta las opciones principales de acceso:
+iniciar sesión para usuarios existentes o registrarse para nuevos usuarios.
+Sirve como punto de entrada a la aplicación y establece el tono visual y
+de funcionalidad para el resto de la experiencia de usuario
+*/
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,7 +56,6 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Logo o ícono
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Logo Alerta Vecinal",
@@ -57,7 +64,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Título
             Text(
                 text = "Alerta Vecinal",
                 style = MaterialTheme.typography.displaySmall,
@@ -68,7 +74,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mensaje de bienvenida
             Text(
                 text = "Mantente informado y protege tu comunidad reportando incidentes en tu área",
                 style = MaterialTheme.typography.bodyLarge,
@@ -79,7 +84,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(64.dp))
 
-            // Botón de Iniciar Sesión
             CustomButton(
                 text = "Iniciar Sesión",
                 onClick = { navController.navigate("login") },
@@ -90,7 +94,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de Registrarse
             CustomButton(
                 text = "Registrarse",
                 onClick = { navController.navigate("register") },
@@ -100,7 +103,6 @@ fun WelcomeScreen(
                 backgroundColor = MaterialTheme.colorScheme.secondary
             )
 
-
         }
     }
 }
@@ -108,5 +110,5 @@ fun WelcomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreenPreview() {
-    WelcomeScreen(navController = rememberNavController()) // ✅ CORREGIDO
+    WelcomeScreen(navController = rememberNavController())
 }

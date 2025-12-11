@@ -1,5 +1,12 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase ErrorMessage: Este componente muestra un mensaje de error estilizado
+dentro de un contenedor con fondo de color de error del tema de Material
+Design. Proporciona una forma consistente y visualmente clara de mostrar
+mensajes de error al usuario en toda la aplicación.
+*/
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,5 +1,15 @@
 package mx.edu.utng.alertavecinal.viewmodel
 
+/*
+Clase MapViewModel: ViewModel que centraliza la lógica del mapa y la gestión
+de reportes de incidentes en la aplicación. Se encarga de cargar reportes
+(aprobados, pendientes, filtrados por tipo), gestionar la ubicación actual
+del usuario, sincronizar datos con Firebase, y mantener el estado del mapa
+incluyendo reportes seleccionados y filtros aplicados. Utiliza dos repositorios
+(ReportRepository y MapRepository) para separar responsabilidades y expone
+todo el estado a través de un StateFlow observable.
+*/
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng

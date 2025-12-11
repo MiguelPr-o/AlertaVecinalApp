@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.data.repository
 
+/*
+Clase AuthRepository: Esta clase es el repositorio central que
+maneja todas las operaciones de autenticación y gestión de usuarios
+de la aplicación. Se encarga de comunicarse con Firebase Authentication
+para el login y registro, con Firestore para almacenar y recuperar
+datos de usuario, y con la base de datos local para caché, sincronizando
+los tres sistemas para mantener la consistencia de datos del usuario.
+*/
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +37,7 @@ class AuthRepository @Inject constructor(
                 println("🔍 DEBUG AuthRepository - Usuario autenticado en Firebase Auth: ${firebaseUser.uid}")
                 val user = getUserFromFirestore(firebaseUser.uid)
 
-                // ✅✅✅ CORREGIDO: Si el usuario no existe en Firestore, FALLAR con mensaje claro
+                // Si el usuario no existe en Firestore, FALLAR con mensaje claro
                 if (user == null) {
                     println("🔴 DEBUG AuthRepository - ERROR: Usuario autenticado pero no existe en Firestore")
                     println("🔴 DEBUG AuthRepository - UserId: ${firebaseUser.uid}, Email: $email")
@@ -43,7 +52,7 @@ class AuthRepository @Inject constructor(
                     ))
                 }
 
-                // ✅✅✅ Usuario existe - guardar localmente
+                // Usuario existe - guardar localmente
                 println("🟢 DEBUG AuthRepository - Login exitoso: ${user.name} (${user.email})")
                 database.userDao().insertUser(user.toEntity())
 
@@ -135,9 +144,6 @@ class AuthRepository @Inject constructor(
         return user
     }
 
-
-
-    // En AuthRepository.kt, modifica getUserFromFirestore:
     suspend fun getUserFromFirestore(userId: String): User? {
         return try {
             println("🔍 AuthRepository - Buscando usuario en Firestore: $userId")
@@ -210,7 +216,6 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    // ✅✅✅ AGREGADO: Método para crear usuarios faltantes
     suspend fun createUserIfNotExists(userId: String, email: String, name: String? = null): Result<User> {
         return try {
             println("🔍 DEBUG AuthRepository - createUserIfNotExists: $userId")

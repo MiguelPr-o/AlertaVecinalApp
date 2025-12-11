@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.data.local
 
+/*
+Clase NotificationDao: Es una interfaz DAO (Data Access Object) que define
+todas las operaciones de base de datos relacionadas con las notificaciones.
+Proporciona métodos para insertar, actualizar, eliminar y consultar
+notificaciones, permitiendo gestionar el estado de lectura y obtener conteos
+de notificaciones no leídas para cada usuario.
+ */
+
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy

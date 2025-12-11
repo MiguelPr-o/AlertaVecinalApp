@@ -1,12 +1,19 @@
 package mx.edu.utng.alertavecinal.data.local
 
+/*
+Clase UserDao: Es una interfaz DAO que define las operaciones de
+base de datos local relacionadas con los usuarios. Maneja el almacenamiento
+y recuperación de información de usuario en el caché local, permitiendo
+acceso rápido a datos del perfil y configuración sin necesidad de consultar
+constantemente Firebase.
+*/
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-
 
 @Dao
 interface UserDao {

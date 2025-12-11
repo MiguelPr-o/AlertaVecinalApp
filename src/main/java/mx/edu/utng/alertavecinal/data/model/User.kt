@@ -1,5 +1,12 @@
 package mx.edu.utng.alertavecinal.data.model
 
+/*
+Clase User: Esta clase representa a un usuario del sistema en el
+dominio de la aplicación. Contiene todos los datos del perfil del
+usuario incluyendo información personal, ubicación, preferencias
+de notificación y rol dentro de la aplicación.
+*/
+
 data class User(
     val id: String = "",
     val name: String = "",

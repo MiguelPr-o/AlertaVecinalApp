@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.di
 
+/*
+Clase AppModule (Módulo Dagger Hilt): Este es el módulo principal
+de inyección de dependencias de la aplicación que define cómo se
+crean y proporcionan todas las instancias necesarias en toda la
+app. Utiliza Dagger Hilt para gestionar la inyección de
+dependencias de forma automática, incluyendo servicios de Firebase,
+la base de datos Room, y todos los repositorios principales.
+*/
+
 import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -22,7 +31,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // Firebase Auth
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
@@ -88,7 +96,6 @@ object AppModule {
         return UserRepository(firestore, database)
     }
 
-    // ✅ CORREGIDO: MapRepository solo con Context (como tu constructor original)
     @Provides
     @Singleton
     fun provideMapRepository(

@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.data.repository
 
+/*
+Clase UserRepository: Esta clase es el repositorio encargado de gestionar
+todas las operaciones relacionadas con usuarios en la aplicación. Maneja
+la sincronización de datos de usuario entre Firebase Firestore (base de
+datos en la nube) y la base de datos local Room, incluyendo actualización
+de ubicación, preferencias de notificación, perfil de usuario y obtención
+de información de múltiples usuarios.
+*/
+
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -63,7 +72,6 @@ class UserRepository @Inject constructor(
         enabled: Boolean
     ): Result<Boolean> {
         return try {
-            // Actualizar en Firestore
             val updateData = mapOf(
                 "notificationRadius" to radius,
                 "notificationsEnabled" to enabled
@@ -137,7 +145,6 @@ class UserRepository @Inject constructor(
         }
     }
 
-    // ✅✅✅ AGREGADO: Método para crear o actualizar usuario completo
     suspend fun createOrUpdateUser(user: User): Result<Boolean> {
         return try {
             firestore.collection("users").document(user.id)

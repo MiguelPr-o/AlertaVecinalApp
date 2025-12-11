@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase ImageUtils: Este objeto proporciona funciones especializadas
+para el procesamiento y optimización de imágenes en la aplicación,
+incluyendo redimensionamiento, compresión, corrección de orientación,
+validación de formatos y conversión entre diferentes formatos de imagen.
+Ayuda a mantener un tamaño de archivo óptimo y un rendimiento adecuado
+cuando los usuarios suben imágenes de reportes.
+*/
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -10,13 +19,10 @@ import java.io.InputStream
 
 object ImageUtils {
 
-    private const val MAX_IMAGE_SIZE = 1024 // Tamaño máximo en píxeles
-    private const val COMPRESSION_QUALITY = 80 // Calidad de compresión (0-100)
-    private const val MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB máximo
+    private const val MAX_IMAGE_SIZE = 1024
+    private const val COMPRESSION_QUALITY = 80
+    private const val MAX_FILE_SIZE = 2 * 1024 * 1024
 
-    /**
-     * Redimensiona una imagen para optimizar su tamaño
-     */
     fun resizeImage(bitmap: Bitmap, maxSize: Int = MAX_IMAGE_SIZE): Bitmap {
         var width = bitmap.width
         var height = bitmap.height
@@ -38,34 +44,25 @@ object ImageUtils {
         return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 
-    /**
-     * Comprime una imagen a JPEG
-     */
     fun compressImage(bitmap: Bitmap, quality: Int = COMPRESSION_QUALITY): ByteArray {
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
         return outputStream.toByteArray()
     }
 
-    /**
-     * Decodifica y optimiza una imagen desde un input stream
-     */
     fun decodeSampledBitmapFromStream(
         inputStream: InputStream,
         reqWidth: Int = MAX_IMAGE_SIZE,
         reqHeight: Int = MAX_IMAGE_SIZE
     ): Bitmap? {
         return try {
-            // Primero solo obtenemos las dimensiones
             val options = BitmapFactory.Options().apply {
                 inJustDecodeBounds = true
             }
             BitmapFactory.decodeStream(inputStream, null, options)
 
-            // Calculamos el sample size
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
 
-            // Decodificamos la imagen con el sample size calculado
             options.inJustDecodeBounds = false
             inputStream.reset()
             BitmapFactory.decodeStream(inputStream, null, options)
@@ -75,9 +72,6 @@ object ImageUtils {
         }
     }
 
-    /**
-     * Calcula el sample size para reducir la memoria usada
-     */
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         val height = options.outHeight
         val width = options.outWidth
@@ -95,9 +89,6 @@ object ImageUtils {
         return inSampleSize
     }
 
-    /**
-     * Corrige la orientación de la imagen basado en EXIF
-     */
     fun correctImageOrientation(bitmap: Bitmap, imagePath: String): Bitmap {
         return try {
             val exif = ExifInterface(imagePath)
@@ -123,39 +114,24 @@ object ImageUtils {
         }
     }
 
-    /**
-     * Verifica si el archivo de imagen es muy grande
-     */
     fun isImageTooLarge(fileSize: Long): Boolean {
         return fileSize > MAX_FILE_SIZE
     }
 
-    /**
-     * Obtiene la extensión del archivo desde una URI
-     */
     fun getFileExtension(uri: Uri): String {
         val path = uri.toString()
         return path.substring(path.lastIndexOf(".") + 1).lowercase()
     }
 
-    /**
-     * Verifica si la extensión del archivo es de imagen válida
-     */
     fun isValidImageFormat(extension: String): Boolean {
         return extension in listOf("jpg", "jpeg", "png", "gif", "bmp", "webp")
     }
 
-    /**
-     * Genera un nombre único para la imagen
-     */
     fun generateImageName(prefix: String = "report"): String {
         val timestamp = System.currentTimeMillis()
         return "${prefix}_${timestamp}.jpg"
     }
 
-    /**
-     * Convierte bytes a Bitmap
-     */
     fun bytesToBitmap(bytes: ByteArray): Bitmap? {
         return try {
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -165,9 +141,6 @@ object ImageUtils {
         }
     }
 
-    /**
-     * Convierte Bitmap a bytes
-     */
     fun bitmapToBytes(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG): ByteArray {
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(format, COMPRESSION_QUALITY, outputStream)

@@ -1,5 +1,12 @@
-// ReportDao.kt (VERSIÓN ACTUALIZADA - Compatible con tus enums)
 package mx.edu.utng.alertavecinal.data.local
+
+/*
+Clase ReportDao: Es una interfaz DAO que define todas las operaciones
+de base de datos local relacionadas con los reportes o alertas. Actúa
+como caché para los reportes de la aplicación, permitiendo almacenarlos
+localmente para acceso rápido, funcionalidad offline y sincronización
+con Firebase, además de proporcionar filtros por estado, tipo y búsquedas avanzadas.
+*/
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -54,12 +61,9 @@ interface ReportDao {
     @Query("UPDATE reports SET isSynced = 1 WHERE id = :reportId")
     suspend fun markReportAsSynced(reportId: String)
 
-    // ✅ FUNCIONES EXISTENTES (ya las tienes)
     @Query("UPDATE reports SET status = :status, approvedBy = :approvedBy, updatedAt = :updatedAt WHERE id = :reportId")
     suspend fun updateReportStatus(reportId: String, status: ReportStatus, approvedBy: String?, updatedAt: Long)
 
-    // ✅ FUNCIÓN NUEVA QUE FALTABA: updateReportInfo (para moderador)
-    // Versión compatible con enums
     suspend fun updateReportInfo(
         reportId: String,
         title: String?,
@@ -70,13 +74,9 @@ interface ReportDao {
         moderatorComment: String?,
         updatedAt: Long
     ) {
-        // Primero obtener el reporte actual
         val currentReport = getReport(reportId)
-        // Necesitamos usar un enfoque diferente para Room con enums
-        // Usaremos updateReport con la entidad completa
     }
 
-    // ✅ MEJOR ALTERNATIVA: Función para actualizar reporte usando la entidad completa
     suspend fun updateReportWithModeration(
         reportId: String,
         title: String? = null,
@@ -91,16 +91,12 @@ interface ReportDao {
             val currentReportFlow = getReport(reportId)
             var currentReport: ReportEntity? = null
 
-            // Esto es un poco tricky con Flow, necesitaríamos usar collect
-            // En su lugar, mejor hacerlo en el repositorio
-
             true
         } catch (e: Exception) {
             false
         }
     }
 
-    // ✅ FUNCIONES ADICIONALES PARA MODERADOR (simplificadas)
 
     // Obtener estadísticas rápidas
     @Query("SELECT COUNT(*) FROM reports WHERE status = 'PENDING'")

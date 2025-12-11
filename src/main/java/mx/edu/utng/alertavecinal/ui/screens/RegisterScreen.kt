@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase RegisterScreen: Esta pantalla permite a nuevos usuarios crear una
+cuenta en la aplicación mediante un formulario de registro que incluye
+validación de campos como nombre, correo electrónico y contraseña
+(con confirmación). Se integra con Firebase Authentication para el proceso
+de registro y navega a la pantalla principal tras un registro exitoso.
+*/
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,7 +58,7 @@ import mx.edu.utng.alertavecinal.viewmodel.AuthViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    navController: NavController,  // ✅ CORREGIDO: Solo NavController
+    navController: NavController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val authState by viewModel.authState.collectAsState()
@@ -61,10 +69,9 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordMismatchError by remember { mutableStateOf<String?>(null) }
 
-    // Navegar si está autenticado
     LaunchedEffect(authState.isAuthenticated) {
         if (authState.isAuthenticated) {
-            navController.navigate("map") {  // ✅ CORREGIDO: Navegación directa
+            navController.navigate("map") {
                 popUpTo("register") { inclusive = true }
             }
         }
@@ -76,7 +83,7 @@ fun RegisterScreen(
                 title = { Text("Crear Cuenta") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()  //
+                        navController.popBackStack()
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
                     }
@@ -97,7 +104,6 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Título
                 Text(
                     text = "Crear Cuenta",
                     style = MaterialTheme.typography.headlineMedium,
@@ -114,7 +120,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Campo de nombre
                 CustomTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -125,7 +130,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Campo de email
                 CustomTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -137,12 +141,10 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Campo de contraseña
                 CustomTextField(
                     value = password,
                     onValueChange = {
                         password = it
-                        // Limpia el error de coincidencia al escribir
                         if (passwordMismatchError != null) passwordMismatchError = null
                     },
                     label = "Contraseña",
@@ -154,12 +156,10 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Campo de confirmar contraseña
                 CustomTextField(
                     value = confirmPassword,
                     onValueChange = {
                         confirmPassword = it
-                        // Limpia el error de coincidencia al escribir
                         if (passwordMismatchError != null) passwordMismatchError = null
                     },
                     label = "Confirmar contraseña",
@@ -171,14 +171,12 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Mostrar error del ViewModel (Firebase) o error local (coincidencia)
                 val currentError = authState.error ?: passwordMismatchError
                 currentError?.let { error ->
                     ErrorMessage(message = error)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Botón de registrar
                 CustomButton(
                     text = "Registrarse",
                     onClick = {
@@ -199,17 +197,15 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Enlace a login
                 Text(
                     text = "¿Ya tienes cuenta? Inicia Sesión",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable {
-                        navController.navigate("login")  // ✅ CORREGIDO: Navegación directa
+                        navController.navigate("login")
                     }
                 )
 
-                // Loading
                 if (authState.isLoading) {
                     Spacer(modifier = Modifier.height(16.dp))
                     CircularProgressIndicator(modifier = Modifier.size(48.dp))
@@ -222,5 +218,5 @@ fun RegisterScreen(
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
-    RegisterScreen(navController = rememberNavController())  // ✅ CORREGIDO: Preview estándar
+    RegisterScreen(navController = rememberNavController())
 }

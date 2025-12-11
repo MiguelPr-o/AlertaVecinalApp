@@ -1,9 +1,20 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase NotificationUtils: Este objeto maneja toda la lógica relacionada con
+notificaciones push en la aplicación, incluyendo la creación de canales de
+notificación (para Android 8+), el envío de diferentes tipos de notificaciones
+(aprobación/rechazo de reportes, alertas de incidentes cercanos) y la gestión
+del estado de las notificaciones. Proporciona una API unificada para todas las
+operaciones de notificación en el sistema.
+*/
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import mx.edu.utng.alertavecinal.R
@@ -18,9 +29,9 @@ object NotificationUtils {
     // IDs de notificación
     private var notificationId = 1000
 
-    /**
-     * Crea los canales de notificación (requerido para Android 8.0+)
-     */
+    // Permiso para notificaciones (requerido desde Android 13/API 33)
+    private const val PERMISSION_POST_NOTIFICATIONS = android.Manifest.permission.POST_NOTIFICATIONS
+
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -66,14 +77,33 @@ object NotificationUtils {
     }
 
     /**
-     * Muestra una notificación simple
+     * Verifica si la aplicación tiene permiso para mostrar notificaciones
      */
+    fun checkNotificationPermission(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Para Android 13+ necesitamos verificar explícitamente el permiso
+            ActivityCompat.checkSelfPermission(
+                context,
+                PERMISSION_POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            // Para versiones anteriores, las notificaciones están habilitadas por defecto
+            true
+        }
+    }
+
     fun showSimpleNotification(
         context: Context,
         title: String,
         message: String,
         channelId: String = CHANNEL_ID_GENERAL
     ) {
+        // Verificar permiso antes de mostrar la notificación
+        if (!checkNotificationPermission(context)) {
+            // Opcional: Registrar el intento fallido o pedir el permiso
+            return
+        }
+
         val notificationId = getNextNotificationId()
 
         val builder = NotificationCompat.Builder(context, channelId)
@@ -83,15 +113,22 @@ object NotificationUtils {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                notify(notificationId, builder.build())
+            }
+        } catch (securityException: SecurityException) {
+            // Manejar la excepción de seguridad
+            // Podrías registrar el error o intentar solicitar el permiso
+            println("Error de seguridad al mostrar notificación: ${securityException.message}")
         }
     }
 
-    /**
-     * Muestra una notificación de reporte aprobado
-     */
     fun showReportApprovedNotification(context: Context, reportTitle: String) {
+        if (!checkNotificationPermission(context)) {
+            return
+        }
+
         val notificationId = getNextNotificationId()
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID_REPORTS)
@@ -101,15 +138,20 @@ object NotificationUtils {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                notify(notificationId, builder.build())
+            }
+        } catch (securityException: SecurityException) {
+            println("Error de seguridad al mostrar notificación de aprobación: ${securityException.message}")
         }
     }
 
-    /**
-     * Muestra una notificación de reporte rechazado
-     */
     fun showReportRejectedNotification(context: Context, reportTitle: String, reason: String?) {
+        if (!checkNotificationPermission(context)) {
+            return
+        }
+
         val notificationId = getNextNotificationId()
 
         val message = if (!reason.isNullOrEmpty()) {
@@ -125,20 +167,25 @@ object NotificationUtils {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                notify(notificationId, builder.build())
+            }
+        } catch (securityException: SecurityException) {
+            println("Error de seguridad al mostrar notificación de rechazo: ${securityException.message}")
         }
     }
 
-    /**
-     * Muestra una alerta de incidente cercano
-     */
     fun showNearbyIncidentAlert(
         context: Context,
         incidentType: String,
         distance: Float,
         address: String?
     ) {
+        if (!checkNotificationPermission(context)) {
+            return
+        }
+
         val notificationId = getNextNotificationId()
 
         val distanceText = FormatUtils.formatDistance(distance)
@@ -150,39 +197,32 @@ object NotificationUtils {
             .setContentText("A $distanceText - $locationText")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setTimeoutAfter(300000) // 5 minutos
+            .setTimeoutAfter(300000)
 
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                notify(notificationId, builder.build())
+            }
+        } catch (securityException: SecurityException) {
+            println("Error de seguridad al mostrar alerta de incidente: ${securityException.message}")
         }
     }
 
-    /**
-     * Verifica si las notificaciones están habilitadas
-     */
     fun areNotificationsEnabled(context: Context): Boolean {
-        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+        return NotificationManagerCompat.from(context).areNotificationsEnabled() &&
+                checkNotificationPermission(context)
     }
 
-    /**
-     * Obtiene el siguiente ID de notificación único
-     */
     private fun getNextNotificationId(): Int {
         return notificationId++.also {
-            if (it > 9999) notificationId = 1000 // Reset si llega al límite
+            if (it > 9999) notificationId = 1000
         }
     }
 
-    /**
-     * Cancela una notificación específica
-     */
     fun cancelNotification(context: Context, notificationId: Int) {
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
-    /**
-     * Cancela todas las notificaciones
-     */
     fun cancelAllNotifications(context: Context) {
         NotificationManagerCompat.from(context).cancelAll()
     }

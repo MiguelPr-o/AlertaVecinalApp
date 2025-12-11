@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase SelectLocationScreen: Esta pantalla proporciona un mapa interactivo
+que permite a los usuarios seleccionar manualmente una ubicación específica
+para sus reportes. Los usuarios pueden tocar cualquier punto del mapa para
+establecer una ubicación, ver las coordenadas seleccionadas y confirmar la
+selección para utilizarla en sus reportes de incidentes.
+*/
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,14 +84,11 @@ fun SelectLocationScreen(
                             selectedLocation?.let { location ->
                                 println("📍 DEBUG SelectLocation: Ubicación seleccionada: $location")
 
-                                // ✅✅✅ SOLUCIÓN EXTREMA: Guardar en un lugar GLOBAL
-                                // 1. Guardar en el ViewModel global
                                 navController.previousBackStackEntry?.savedStateHandle?.set(
                                     "selected_location",
                                     location
                                 )
 
-                                // 2. También guardar en el backstack entry actual por si acaso
                                 navController.currentBackStackEntry?.savedStateHandle?.set(
                                     "selected_location",
                                     location
@@ -91,7 +96,6 @@ fun SelectLocationScreen(
 
                                 println("📍 DEBUG SelectLocation: Ubicación GUARDADA en savedStateHandle")
 
-                                // 3. Navegar de regreso
                                 navController.popBackStack()
                                 println("📍 DEBUG SelectLocation: Navegación completada")
                             } ?: run {

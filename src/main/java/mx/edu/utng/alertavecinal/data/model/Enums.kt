@@ -1,5 +1,13 @@
-// Enums.kt (VERSIÓN ACTUALIZADA)
 package mx.edu.utng.alertavecinal.data.model
+
+/*
+Clase Enums (fichero Enums.kt): Este archivo contiene todos los
+enumerados (enums) que definen los tipos, estados y roles dentro
+de la aplicación "Alerta Vecinal". Sirve como una fuente única
+de verdad para las constantes del sistema, asegurando consistencia
+en tipos de reportes, estados de moderación, roles de usuario y
+categorías de notificaciones en toda la aplicación.
+ */
 
 enum class UserRole {
     USER,
@@ -61,7 +69,6 @@ enum class NotificationType {
     INFO_REQUESTED       // Se solicitó más información (para moderador)
 }
 
-// ✅ NUEVO: Enums para acciones de moderación
 enum class ModerationAction {
     APPROVE,        // Aprobar reporte
     REJECT,         // Rechazar reporte
@@ -70,7 +77,6 @@ enum class ModerationAction {
     DELETE          // Eliminar reporte (solo admin)
 }
 
-// ✅ NUEVO: Enums para filtros de moderador
 enum class ModeratorFilter {
     ALL,            // Todos los reportes
     PENDING,        // Solo pendientes
@@ -80,7 +86,6 @@ enum class ModeratorFilter {
     URGENT          // Reportes urgentes (robos, incendios, etc.)
 }
 
-// ✅ NUEVO: Enums para estadísticas de moderador
 enum class StatType {
     PENDING_COUNT,
     APPROVED_COUNT,
@@ -90,18 +95,16 @@ enum class StatType {
     APPROVAL_RATE
 }
 
-// ✅ NUEVO: Enums para tipos de usuario en el sistema
 enum class UserType {
-    REGULAR_USER,   // Usuario regular que reporta incidentes
-    MODERATOR,      // Usuario que modera reportes
-    ADMIN,          // Administrador del sistema
-    GUEST           // Usuario no registrado
+    REGULAR_USER,
+    MODERATOR,
+    ADMIN,
+    GUEST
 }
 
-// ✅ NUEVO: Enums para prioridad de reportes
 enum class ReportPriority {
-    LOW,        // Ruido, mascota perdida, etc.
-    MEDIUM,     // Vandalismo, persona sospechosa
-    HIGH,       // Robo, pelea
-    URGENT      // Incendio, accidente grave
+    LOW,
+    MEDIUM,
+    HIGH,
+    URGENT
 }

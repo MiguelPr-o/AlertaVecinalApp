@@ -1,5 +1,16 @@
 package mx.edu.utng.alertavecinal.viewmodel
 
+/*
+Clase ProfileViewModel: ViewModel dedicado a la gestión del perfil del usuario
+y sus reportes personales. Maneja la carga del perfil desde Firestore, la
+obtención de todos los reportes creados por el usuario, y proporciona
+funcionalidades para actualizar información personal (nombre, teléfono),
+configurar preferencias de notificación, y eliminar reportes pendientes.
+Implementa un sistema de estados para la eliminación con manejo robusto de
+errores y validaciones de permisos. Se integra con AuthRepository,
+UserRepository y ReportRepository para mantener la coherencia de datos.
+*/
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,7 +92,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    // ✅✅✅ CORREGIDO: Método deleteReport optimizado
     fun deleteReport(reportId: String, userId: String) {
         println("🔍 DEBUG ProfileViewModel - deleteReport INICIADO")
         println("🔍 DEBUG ProfileViewModel - reportId: $reportId")
@@ -108,7 +118,6 @@ class ProfileViewModel @Inject constructor(
                 println("  - Current UserId: $userId")
                 println("  - Status: ${reportToDelete.status}")
 
-                // Validaciones
                 if (reportToDelete.userId != userId) {
                     println("❌ DEBUG ProfileViewModel - No pertenece al usuario")
                     _deleteState.value = DeleteState.Error("No puedes eliminar reportes de otros usuarios")
@@ -121,7 +130,6 @@ class ProfileViewModel @Inject constructor(
                     return@launch
                 }
 
-                // Proceder con la eliminación
                 println("🔍 DEBUG ProfileViewModel - Procediendo con eliminación...")
                 val result = reportRepository.deleteReport(reportId)
 

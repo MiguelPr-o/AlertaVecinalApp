@@ -1,5 +1,12 @@
-// ReportActionsModal.kt
 package mx.edu.utng.alertavecinal.ui.components
+
+/*
+Clase ReportActionsModal: Este archivo contiene un conjunto de componentes
+modales y diálogos diseñados específicamente para las acciones de
+moderación de reportes. Incluye modales para aprobar, rechazar, solicitar
+más información y editar reportes, proporcionando interfaces especializadas
+para cada acción con campos de comentario y confirmación apropiados.
+*/
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

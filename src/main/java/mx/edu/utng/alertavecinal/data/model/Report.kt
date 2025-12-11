@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.data.model
 
+/*
+Clase Report: Esta clase representa un reporte o alerta de incidente
+en el dominio de la aplicación. Contiene todos los datos de un
+reporte como su tipo, ubicación, descripción y estado de moderación,
+y proporciona métodos para obtener íconos y colores según el tipo
+y estado para mostrar en la interfaz de usuario.
+*/
+
 data class Report(
     val id: String = "",
     val userId: String = "",
@@ -42,7 +50,6 @@ data class Report(
     }
 }
 
-// ✅ AGREGAR ESTO AL FINAL DEL ARCHIVO (fuera de la data class)
 fun Report.toEntityModel(): mx.edu.utng.alertavecinal.data.local.ReportEntity {
     return mx.edu.utng.alertavecinal.data.local.ReportEntity(
         id = this.id,

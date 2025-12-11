@@ -1,5 +1,14 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase ProfileScreen: Esta pantalla muestra el perfil del usuario
+autenticado, incluyendo información personal, estadísticas de sus
+reportes (total, aprobados, pendientes, rechazados) y configuración de
+notificaciones. También proporciona acceso al historial completo de
+reportes del usuario con opción para eliminar reportes pendientes y la
+funcionalidad para cerrar sesión.
+*/
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,14 +81,12 @@ fun ProfileScreen(
     val userReports by profileViewModel.userReports.collectAsState()
     val deleteState by profileViewModel.deleteState.collectAsState()
 
-    // ✅ Obtener userId actual
     val currentUserId = authState.currentUser?.id ?: ""
 
     var notificationsEnabled by remember { mutableStateOf(true) }
     var notificationRadius by remember { mutableStateOf(1000) }
     var showReportHistory by remember { mutableStateOf(false) }
 
-    // ✅✅✅ CORREGIDO: Observar cambios en authState.currentUser en lugar de Unit
     LaunchedEffect(authState.currentUser) {
         println("🔍 DEBUG ProfileScreen - authState.currentUser cambiado: ${authState.currentUser}")
         val currentUser = authState.currentUser
@@ -91,7 +98,6 @@ fun ProfileScreen(
         }
     }
 
-    // ✅✅✅ AGREGADO: También cargar cuando la pantalla se enfoca por primera vez
     LaunchedEffect(Unit) {
         // Verificar si ya hay un usuario pero no se ha cargado el perfil
         if (authState.currentUser != null && profileState == null) {
@@ -100,14 +106,12 @@ fun ProfileScreen(
         }
     }
 
-    // ✅✅✅ AGREGADO: Manejar estado de eliminación
     LaunchedEffect(deleteState) {
         when (deleteState) {
             is ProfileViewModel.DeleteState.Success -> {
                 // Se eliminó exitosamente, ya se recargaron los datos
             }
             is ProfileViewModel.DeleteState.Error -> {
-                // Podrías mostrar el error en un snackbar
                 println("❌ Error al eliminar: ${(deleteState as ProfileViewModel.DeleteState.Error).message}")
             }
             else -> {}
@@ -142,7 +146,6 @@ fun ProfileScreen(
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (showReportHistory) {
-                // ✅✅✅ ACTUALIZADO: Pasar ProfileViewModel y userId
                 ReportHistorySection(
                     userReports = userReports,
                     onReportClick = { report ->
@@ -160,7 +163,6 @@ fun ProfileScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Información del usuario
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -225,7 +227,6 @@ fun ProfileScreen(
                         }
                     }
 
-                    // Configuración de notificaciones
                     Card(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -274,7 +275,6 @@ fun ProfileScreen(
                         }
                     }
 
-                    // Estadísticas - ✅✅✅ CORREGIDO: Usar userReports del ProfileViewModel
                     Card(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -382,7 +382,6 @@ fun ProfileScreen(
                 }
             }
 
-            // Mostrar errores si existen
             error?.let { errorMessage ->
                 Snackbar(
                     action = {
@@ -404,7 +403,7 @@ fun ProfileScreen(
 }
 
 // Sección de historial de reportes CON FUNCIONALIDAD DE ELIMINAR
-@OptIn(ExperimentalMaterial3Api::class) // ✅ AGREGADO: Esta línea resuelve el error
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportHistorySection(
     userReports: List<mx.edu.utng.alertavecinal.data.model.Report>,
@@ -439,17 +438,14 @@ fun ReportHistorySection(
             )
         }
 
-        // ✅ AGREGADO: Manejar estados de eliminación
         LaunchedEffect(deleteState) {
             when (deleteState) {
                 is ProfileViewModel.DeleteState.Success -> {
-                    // Cerrar diálogo y limpiar
                     showDeleteDialog = false
                     reportToDelete = null
                     profileViewModel.resetDeleteState()
                 }
                 is ProfileViewModel.DeleteState.Error -> {
-                    // Mantener el diálogo abierto para mostrar error
                     profileViewModel.resetDeleteState()
                 }
                 else -> {}
@@ -493,7 +489,6 @@ fun ReportHistorySection(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(userReports) { report ->
-                    // ✅ NUEVO: Card personalizada con opción de eliminar
                     Card(
                         onClick = { onReportClick(report) },
                         modifier = Modifier.fillMaxWidth(),
@@ -546,7 +541,6 @@ fun ReportHistorySection(
                                     )
                                 }
 
-                                // ✅ NUEVO: Botón de eliminar (solo para reportes pendientes)
                                 if (report.status == ReportStatus.PENDING && report.userId == currentUserId) {
                                     IconButton(
                                         onClick = {
@@ -568,7 +562,6 @@ fun ReportHistorySection(
             }
         }
 
-        // ✅ NUEVO: Diálogo de confirmación para eliminar
         if (showDeleteDialog && reportToDelete != null) {
             AlertDialog(
                 onDismissRequest = {

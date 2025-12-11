@@ -2,10 +2,14 @@ package mx.edu.utng.alertavecinal.data.model
 
 import com.google.android.gms.maps.model.LatLng
 
-/**
- * Estado para la pantalla de selección de ubicación
- * Maneja la ubicación actual, la seleccionada por el usuario, y estados de carga/error
+/*
+Clase LocationSelectionState: Esta clase representa el estado
+de selección de ubicación en la aplicación, gestionando tanto
+la ubicación actual del usuario como una ubicación seleccionada
+manualmente en el mapa. Proporciona métodos para validar ubicaciones,
+calcular distancias y generar descripciones amigables para mostrar al usuario.
  */
+
 data class LocationSelectionState(
     val currentLocation: LatLng? = null,
     val selectedLocation: LatLng? = null,
@@ -14,45 +18,31 @@ data class LocationSelectionState(
     val isLocationEnabled: Boolean = false,
     val address: String? = null
 ) {
-    /**
-     * Verifica si hay una ubicación seleccionada válida
-     */
+
     fun hasValidSelectedLocation(): Boolean {
         return selectedLocation != null &&
                 selectedLocation.latitude != 0.0 &&
                 selectedLocation.longitude != 0.0
     }
 
-    /**
-     * Verifica si hay una ubicación actual válida
-     */
     fun hasValidCurrentLocation(): Boolean {
         return currentLocation != null &&
                 currentLocation.latitude != 0.0 &&
                 currentLocation.longitude != 0.0
     }
 
-    /**
-     * Obtiene las coordenadas de la ubicación seleccionada como string
-     */
     fun getSelectedCoordinates(): String {
         return selectedLocation?.let { location ->
             "${String.format("%.6f", location.latitude)}, ${String.format("%.6f", location.longitude)}"
         } ?: "No seleccionada"
     }
 
-    /**
-     * Obtiene las coordenadas de la ubicación actual como string
-     */
     fun getCurrentCoordinates(): String {
         return currentLocation?.let { location ->
             "${String.format("%.6f", location.latitude)}, ${String.format("%.6f", location.longitude)}"
         } ?: "No disponible"
     }
 
-    /**
-     * Calcula la distancia entre la ubicación actual y la seleccionada en metros
-     */
     fun calculateDistanceFromCurrent(): Float {
         if (!hasValidCurrentLocation() || !hasValidSelectedLocation()) {
             return 0f
@@ -73,9 +63,6 @@ data class LocationSelectionState(
         return results[0]
     }
 
-    /**
-     * Obtiene una descripción amigable de la distancia
-     */
     fun getDistanceDescription(): String {
         val distance = calculateDistanceFromCurrent()
         return when {
@@ -85,16 +72,10 @@ data class LocationSelectionState(
         }
     }
 
-    /**
-     * Verifica si la ubicación seleccionada está cerca de la actual (menos de 100m)
-     */
     fun isSelectedLocationNearCurrent(): Boolean {
         return calculateDistanceFromCurrent() < 100f
     }
 
-    /**
-     * Obtiene el estado de la ubicación como texto descriptivo
-     */
     fun getLocationStatus(): String {
         return when {
             isLoading -> "Obteniendo ubicación..."

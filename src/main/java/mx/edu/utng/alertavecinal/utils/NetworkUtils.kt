@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase NetworkUtils: Este objeto proporciona funciones para monitorear
+y gestionar el estado de conectividad de red en la aplicación. Incluye verificación
+de disponibilidad de internet, detección del tipo de conexión (WiFi, datos móviles),
+registro de callbacks para cambios en la red y utilidades para simular condiciones
+de red durante pruebas.
+*/
+
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -13,9 +21,6 @@ object NetworkUtils {
     private val _isNetworkAvailable = MutableStateFlow(true)
     val isNetworkAvailable: StateFlow<Boolean> = _isNetworkAvailable
 
-    /**
-     * Verifica si hay conexión a internet
-     */
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -34,9 +39,6 @@ object NetworkUtils {
         }
     }
 
-    /**
-     * Registra un callback para monitorear cambios en la conectividad
-     */
     fun registerNetworkCallback(context: Context) {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder()
@@ -86,17 +88,11 @@ object NetworkUtils {
         }
     }
 
-    /**
-     * Verifica si la conexión es lo suficientemente rápida para operaciones críticas
-     */
     fun isConnectionGoodForUpload(context: Context): Boolean {
         val connectionType = getConnectionType(context)
         return connectionType == "WiFi" || connectionType == "Ethernet"
     }
 
-    /**
-     * Simula un delay de red para testing
-     */
     suspend fun simulateNetworkDelay() {
         kotlinx.coroutines.delay(1000L) // 1 segundo de delay simulado
     }

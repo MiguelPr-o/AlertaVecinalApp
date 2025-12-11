@@ -1,5 +1,14 @@
-// AuthViewModel.kt (VERSIÓN ACTUALIZADA)
 package mx.edu.utng.alertavecinal.viewmodel
+
+/*
+Clase AuthViewModel: ViewModel responsable de toda la lógica de autenticación
+y gestión del estado del usuario en la aplicación. Maneja el inicio de sesión,
+registro, cierre de sesión y verificación del usuario actual. Utiliza Hilt
+para la inyección de dependencias y expone estados observables a través de
+StateFlow. También implementa la lógica de redirección automática según el
+rol del usuario (normal → mapa, moderador/admin → dashboard) después de la
+autenticación exitosa.
+*/
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +32,6 @@ class AuthViewModel @Inject constructor(
     private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    // ✅ NUEVO: Estado para redirección después de login
     private val _shouldNavigate = MutableStateFlow<String?>(null)
     val shouldNavigate: StateFlow<String?> = _shouldNavigate.asStateFlow()
 
@@ -51,7 +59,6 @@ class AuthViewModel @Inject constructor(
                     )
                     println("🟢 DEBUG AuthViewModel - Login exitoso: ${user.name}")
 
-                    // ✅ NUEVO: Determinar a dónde redirigir según el rol
                     determineRedirectDestination(user)
                 },
                 onFailure = { exception ->
@@ -94,7 +101,6 @@ class AuthViewModel @Inject constructor(
                     )
                     println("🟢 DEBUG AuthViewModel - Registro exitoso: ${user.name}")
 
-                    // ✅ NUEVO: Determinar a dónde redirigir según el rol
                     determineRedirectDestination(user)
                 },
                 onFailure = { exception ->
@@ -158,7 +164,6 @@ class AuthViewModel @Inject constructor(
                             )
                             println("🟢 DEBUG AuthViewModel - Usuario verificado: ${user.name} (${user.email})")
 
-                            // ✅ NUEVO: Determinar redirección al iniciar la app
                             determineRedirectDestination(user)
                         },
                         onFailure = { exception ->
@@ -192,7 +197,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    // ✅ NUEVO: Determinar a dónde redirigir según el rol del usuario
     private fun determineRedirectDestination(user: User) {
         viewModelScope.launch {
             val destination = when (user.role) {
@@ -210,27 +214,22 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    // ✅ NUEVO: Limpiar el estado de navegación después de usarlo
     fun clearNavigation() {
         _shouldNavigate.value = null
     }
 
-    // ✅ AGREGADO: Método para forzar recarga del usuario
     fun refreshUser() {
         println("🔍 DEBUG AuthViewModel - Refrescando datos del usuario")
         checkCurrentUser()
     }
 
-    // ✅ AGREGADO: Método para actualizar usuario localmente después de cambios
     fun updateCurrentUser(updatedUser: User) {
         println("🔍 DEBUG AuthViewModel - Actualizando usuario local: ${updatedUser.name}")
         _authState.value = _authState.value.copy(currentUser = updatedUser)
     }
 
-    // Método para diagnóstico
     fun getCurrentFirebaseUser() = authRepository.getCurrentUser()
 
-    // ✅ AGREGADO: Método para verificar estado actual
     fun printCurrentState() {
         println("=== DEBUG AuthViewModel Estado Actual ===")
         println("isAuthenticated: ${_authState.value.isAuthenticated}")
@@ -241,9 +240,6 @@ class AuthViewModel @Inject constructor(
         println("Should Navigate: ${_shouldNavigate.value ?: "null"}")
         println("=====================================")
     }
-
-
-
 
     // AuthViewModel.kt - Agregar esta función
     fun createModeratorAccount() {
@@ -272,6 +268,5 @@ class AuthViewModel @Inject constructor(
             )
         }
     }
-
 
 }

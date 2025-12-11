@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.screens
 
+/*
+Clase PendingReportsScreen: Esta pantalla muestra una lista de todos los
+reportes de incidentes que están pendientes de revisión por moderadores.
+Proporciona funciones para ver detalles de cada reporte y opciones de
+gestión (como eliminar reportes), sirviendo como una cola de trabajo para
+los moderadores que necesitan revisar y tomar decisiones sobre los reportes enviados.
+ */
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,21 +60,17 @@ fun PendingReportsScreen(
     reportViewModel: ReportViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel() // ← Agregar AuthViewModel
 ) {
-    // Obtener estados
     val pendingReports by reportViewModel.pendingReportsState.collectAsState()
     val reportState by reportViewModel.reportState.collectAsState()
     val authState by authViewModel.authState.collectAsState()
 
-    // Obtener userId del usuario autenticado
     val currentUserId = authState.currentUser?.id ?: ""
     val isUserAuthenticated = authState.isAuthenticated
 
-    // Estados para UI
     var showMenuForReportId by remember { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var reportToDelete by remember { mutableStateOf<String?>(null) }
 
-    // Cargar reportes pendientes al iniciar
     LaunchedEffect(Unit) {
         reportViewModel.loadPendingReports()
     }
@@ -110,7 +114,6 @@ fun PendingReportsScreen(
                             Card(
                                 onClick = {
                                     reportViewModel.selectReport(report)
-                                    // Opcional: navegar a detalles
                                     // navController.navigate("reportDetail/${report.id}")
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -189,7 +192,6 @@ fun PendingReportsScreen(
                 }
             }
 
-            // Diálogo de confirmación para eliminar
             if (showDeleteDialog && reportToDelete != null) {
                 AlertDialog(
                     onDismissRequest = {
@@ -233,7 +235,6 @@ fun PendingReportsScreen(
                 )
             }
 
-            // Mostrar error si no hay usuario autenticado
             LaunchedEffect(authState) {
                 if (!isUserAuthenticated) {
                     // Opcional: Mostrar mensaje o redirigir al login

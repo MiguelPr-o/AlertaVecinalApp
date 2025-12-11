@@ -1,5 +1,16 @@
 package mx.edu.utng.alertavecinal.utils
 
+/*
+Clase ValidationUtils: Este objeto proporciona utilidades de validación centralizadas
+para toda la aplicación. Implementa validaciones de formularios usando expresiones
+regulares para email, contraseñas, nombres y teléfonos. Ofrece métodos específicos
+para validar reportes de incidentes (título, descripción, tipo, ubicación) y
+utiliza un sistema de resultados tipados (ValidationResult) que permite manejar
+tanto casos exitosos como errores con mensajes descriptivos.
+*/
+
+
+
 import mx.edu.utng.alertavecinal.data.model.ReportType
 import java.util.regex.Pattern
 

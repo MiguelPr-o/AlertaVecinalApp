@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase CustomButtons: Este archivo contiene un conjunto de componentes
+de botones personalizados y reutilizables para la interfaz de usuario
+de la aplicación. Incluye botones con diferentes estilos (rellenos, con borde),
+soporte para íconos, estados de carga y personalización completa de colores
+y tamaños, proporcionando una experiencia de UI consistente y moderna en toda la app.
+*/
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,8 +43,8 @@ fun CustomButton(
     height: Dp = 48.dp,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    leadingIcon: ImageVector? = null, // ✅ NUEVO: Parámetro para ícono
-    trailingIcon: ImageVector? = null // ✅ NUEVO: Parámetro para ícono al final
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null
 ) {
     Button(
         onClick = {
@@ -63,7 +71,6 @@ fun CustomButton(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // ✅ NUEVO: Mostrar ícono inicial si está presente
                 leadingIcon?.let { icon ->
                     Icon(
                         imageVector = icon,
@@ -81,7 +88,6 @@ fun CustomButton(
                     fontWeight = FontWeight.Medium
                 )
 
-                // ✅ NUEVO: Mostrar ícono final si está presente
                 trailingIcon?.let { icon ->
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
@@ -104,8 +110,8 @@ fun CustomOutlinedButton(
     borderColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.primary,
     isLoading: Boolean = false,
-    leadingIcon: ImageVector? = null, // ✅ NUEVO: Parámetro para ícono
-    trailingIcon: ImageVector? = null // ✅ NUEVO: Parámetro para ícono al final
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null
 ) {
     Button(
         onClick = {
@@ -151,7 +157,6 @@ fun CustomOutlinedButton(
                     fontWeight = FontWeight.Medium
                 )
 
-                // ✅ NUEVO: Mostrar ícono final si está presente
                 trailingIcon?.let { icon ->
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
@@ -177,8 +182,8 @@ fun CustomButtonWithLoading(
     enabled: Boolean = true,
     isLoading: Boolean = false,
     loadingText: String = "Cargando...",
-    leadingIcon: ImageVector? = null, // ✅ NUEVO: Parámetro para ícono
-    trailingIcon: ImageVector? = null // ✅ NUEVO: Parámetro para ícono al final
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null
 ) {
     Button(
         onClick = {
@@ -212,7 +217,6 @@ fun CustomButtonWithLoading(
                     fontWeight = FontWeight.Medium
                 )
             } else {
-                // ✅ NUEVO: Mostrar ícono inicial si está presente
                 leadingIcon?.let { icon ->
                     Icon(
                         imageVector = icon,
@@ -230,7 +234,6 @@ fun CustomButtonWithLoading(
                     fontWeight = FontWeight.Medium
                 )
 
-                // ✅ NUEVO: Mostrar ícono final si está presente
                 trailingIcon?.let { icon ->
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
@@ -245,7 +248,6 @@ fun CustomButtonWithLoading(
     }
 }
 
-// ✅ NUEVO: Función especializada para botones con ícono
 @Composable
 fun CustomIconButton(
     text: String,
@@ -321,7 +323,6 @@ fun CustomIconButton(
     }
 }
 
-// ✅ NUEVO: Enum para posición del ícono
 enum class IconPosition {
     Start, End
 }

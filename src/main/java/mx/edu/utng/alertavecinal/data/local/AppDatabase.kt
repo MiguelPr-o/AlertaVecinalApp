@@ -1,5 +1,9 @@
 package mx.edu.utng.alertavecinal.data.local
 
+// CLASE PRINCIPAL DE BASE DE DATOS DE LA APLICACIÓN
+// Esta clase define y gestiona la base de datos local de la app "Alerta Vecinal"
+// Utiliza Room Persistence Library para almacenar datos de usuarios, reportes y notificaciones
+
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -12,7 +16,6 @@ import androidx.room.TypeConverters
         ReportEntity::class,
         NotificationEntity::class
     ],
-    // ✅ VERSIÓN 2 (pero sin migración compleja)
     version = 2,
     exportSchema = false
 )
@@ -34,7 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "alerta_vecinal_db"
                 )
-                    // ✅ SOLO ESTO ES SUFICIENTE (Room recreará la tabla)
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

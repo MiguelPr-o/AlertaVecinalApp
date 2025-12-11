@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase ReportFilter: Este componente proporciona un filtro interactivo de
+tipo "chip" para filtrar reportes por categoría en la aplicación. Muestra
+una fila horizontal de opciones de filtro (todos los tipos de reporte
+más categorías específicas) que los usuarios pueden seleccionar para ver
+solo los reportes de cierto tipo.
+*/
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

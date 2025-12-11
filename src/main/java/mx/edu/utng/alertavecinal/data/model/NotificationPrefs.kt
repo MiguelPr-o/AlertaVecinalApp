@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.data.model
 
+/*
+Clase NotificationPrefs: Esta clase representa las preferencias
+de notificación del usuario, almacenando configuraciones como el
+radio de alerta, tipos de notificaciones habilitados, y horarios
+silenciosos. Permite personalizar cómo y cuándo el usuario
+recibe alertas sobre incidentes cercanos en la aplicación.
+ */
+
 data class NotificationPrefs(
     val userId: String = "",
     val enabled: Boolean = true,

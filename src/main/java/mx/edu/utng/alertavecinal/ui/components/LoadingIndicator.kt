@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase LoadingIndicator: Este archivo contiene varios componentes
+reutilizables para mostrar estados de carga en diferentes contextos
+de la aplicación. Incluye indicadores de carga desde pequeños hasta
+pantalla completa y un diálogo de carga modal, proporcionando una
+experiencia visual consistente durante operaciones asíncronas en toda la app.
+*/
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size

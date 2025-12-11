@@ -1,5 +1,13 @@
-// ModeratorDashboardScreen.kt (VERSIÓN ACTUALIZADA)
 package mx.edu.utng.alertavecinal.ui.screens
+
+/*
+Clase ModeratorDashboardScreen: Esta pantalla proporciona un panel de control
+especializado para moderadores y administradores, mostrando estadísticas en tiempo
+real de reportes (pendientes, aprobados, rechazados) y permitiendo gestionar todos
+los reportes de incidentes. Ofrece funciones de filtrado, ordenación y acciones
+rápidas de moderación para revisar y tomar decisiones sobre los reportes enviados
+por los usuarios.
+*/
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -94,6 +102,23 @@ fun ModeratorDashboardScreen(
     var showFilterMenu by remember { mutableStateOf(false) }
     var activeTab by remember { mutableStateOf(ModeratorTab.PENDING) }
 
+    fun handleLogoutAndNavigateToLogin() {
+        Log.d("ModeratorDashboard", "Cerrando sesión y navegando al Login...")
+
+        // 1. Cerrar sesión en el ViewModel de autenticación
+        authViewModel.logout()
+
+        // 2. Navegar al Login y limpiar el back stack completamente
+        navController.navigate(Constants.ROUTE_LOGIN) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+
+        Log.d("ModeratorDashboard", "Sesión cerrada y navegación al Login exitosa")
+    }
+
+
+
     // Función para manejar la navegación al Login
     fun navigateToLogin() {
         try {
@@ -113,12 +138,10 @@ fun ModeratorDashboardScreen(
         }
     }
 
-    // Cargar datos al iniciar
     LaunchedEffect(Unit) {
         Log.d("ModeratorDashboard", "Iniciando dashboard...")
         viewModel.loadAllModeratorData()
 
-        // Debug: verificar estado de autenticación
         Log.d("ModeratorDashboard", "Auth State: ${authState.isAuthenticated}")
         Log.d("ModeratorDashboard", "User: ${authState.currentUser?.name}")
         Log.d("ModeratorDashboard", "Role: ${authState.currentUser?.role?.name}")
@@ -144,24 +167,20 @@ fun ModeratorDashboardScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        // Navegar al Login cuando se presiona el botón de volver
-                        navigateToLogin()
+                        handleLogoutAndNavigateToLogin()
                     }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver al Login")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Cerrar sesión y volver al Login")
                     }
                 },
                 actions = {
-                    // Filtro por tipo de reporte
                     IconButton(onClick = { showFilterMenu = true }) {
                         Icon(Icons.Default.FilterList, contentDescription = "Filtrar")
                     }
 
-                    // Ordenar
                     IconButton(onClick = { /* TODO: Implementar ordenación */ }) {
                         Icon(Icons.Default.Sort, contentDescription = "Ordenar")
                     }
 
-                    // Refrescar
                     IconButton(
                         onClick = {
                             viewModel.loadAllModeratorData()
@@ -224,7 +243,6 @@ fun ModeratorDashboardScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Tabs de navegación
                 ModeratorTabs(
                     activeTab = activeTab,
                     onTabSelected = { tab ->
@@ -235,7 +253,6 @@ fun ModeratorDashboardScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Contenido según pestaña activa
                 when (activeTab) {
                     ModeratorTab.PENDING -> {
                         if (isLoading) {
@@ -318,7 +335,6 @@ fun ModeratorDashboardScreen(
             }
         }
 
-        // Menú de filtros
         if (showFilterMenu) {
             Box(
                 modifier = Modifier
@@ -560,7 +576,6 @@ private fun FilterDropdownMenu(
         onDismissRequest = onDismiss,
         modifier = Modifier.background(MaterialTheme.colorScheme.surface)
     ) {
-        // Título
         Text(
             text = "Filtrar por tipo",
             style = MaterialTheme.typography.bodyMedium,
@@ -570,7 +585,6 @@ private fun FilterDropdownMenu(
 
         Divider()
 
-        // Opción para limpiar filtro
         if (selectedFilter != null) {
             DropdownMenuItem(
                 text = {
@@ -611,7 +625,6 @@ private fun FilterDropdownMenu(
     }
 }
 
-// En ModeratorDashboardScreen.kt, usa esto:
 @Composable
 private fun ErrorMessage(
     message: String,
@@ -660,7 +673,6 @@ private fun ErrorMessage(
     }
 }
 
-// Enums para las pestañas
 enum class ModeratorTab(
     val title: String,
     val icon: ImageVector

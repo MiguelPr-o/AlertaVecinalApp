@@ -1,6 +1,15 @@
-// ReportRepository.kt
 package mx.edu.utng.alertavecinal.data.repository
 
+/*
+Clase ReportRepository: Esta clase es el repositorio principal que maneja
+toda la lógica de reportes e incidentes en la aplicación. Se encarga de
+sincronizar datos entre Firebase Firestore (la base de datos en la nube),
+Firebase Storage (para imágenes) y la base de datos local Room, proporcionando
+funciones para crear, modificar, aprobar, rechazar y buscar reportes, así
+como para gestionar el historial de moderación.
+*/
+
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
@@ -15,6 +24,7 @@ import mx.edu.utng.alertavecinal.data.local.updateWithModerationData
 import mx.edu.utng.alertavecinal.data.model.Report
 import mx.edu.utng.alertavecinal.data.model.ReportStatus
 import mx.edu.utng.alertavecinal.data.model.ReportType
+import mx.edu.utng.alertavecinal.data.model.toEntityModel
 import java.util.UUID
 import javax.inject.Inject
 
@@ -24,7 +34,6 @@ class ReportRepository @Inject constructor(
     private val database: AppDatabase
 ) {
 
-    // ✅ FUNCIÓN AUXILIAR PRIVADA PARA CONVERTIR Report -> ReportEntity
     private fun convertReportToEntity(report: Report): ReportEntity {
         return ReportEntity(
             id = report.id,
@@ -48,8 +57,6 @@ class ReportRepository @Inject constructor(
             isSynced = false
         )
     }
-
-    // ✅ FUNCIONES EXISTENTES (MANTENIDAS)
 
     suspend fun createReport(report: Report): Result<String> {
         return try {
@@ -141,8 +148,6 @@ class ReportRepository @Inject constructor(
             Result.failure(e)
         }
     }
-
-    // ✅ NUEVAS FUNCIONES MEJORADAS PARA MODERADOR
 
     suspend fun updateReportStatusWithComment(
         reportId: String,
@@ -278,19 +283,43 @@ class ReportRepository @Inject constructor(
     }
 
     suspend fun getReportById(reportId: String): Report? {
+        Log.d("ReportRepository", "🔍 Buscando reporte: $reportId")
+
         return try {
-            var report: Report? = null
-            database.reportDao().getReport(reportId).collect { entity ->
-                entity?.let { report = it.toDomainModel() }
+            // 1. Buscar en Room (base de datos local) - CORREGIDO
+            Log.d("ReportRepository", "📱 Buscando en Room...")
+
+            // ✅ CORREGIDO: Usa first() en lugar de collect
+            val entity = database.reportDao().getReport(reportId).first()
+            var report: Report? = entity?.toDomainModel()
+
+            if (report != null) {
+                Log.d("ReportRepository", "✅ Encontrado en Room: ${report.title}")
+                return report
             }
 
-            if (report == null) {
-                val document = firestore.collection("reports").document(reportId).get().await()
+            Log.d("ReportRepository", "📡 No en Room, buscando en Firestore...")
+
+            // 2. Buscar en Firestore
+            val document = firestore.collection("reports").document(reportId).get().await()
+
+            if (document.exists()) {
+                Log.d("ReportRepository", "✅ Documento existe en Firestore")
                 report = document.toObject(Report::class.java)
-            }
 
-            report
+                // 3. Guardar en Room para futuras consultas
+                report?.let {
+                    Log.d("ReportRepository", "📝 Guardando en Room...")
+                    database.reportDao().insertReport(it.toEntityModel())
+                }
+
+                return report
+            } else {
+                Log.d("ReportRepository", "❌ Documento NO existe en Firestore")
+                return null
+            }
         } catch (e: Exception) {
+            Log.e("ReportRepository", "💥 Error en getReportById", e)
             null
         }
     }
@@ -317,7 +346,6 @@ class ReportRepository @Inject constructor(
         }
     }
 
-    // ✅ FUNCIÓN PARA SOLICITAR MÁS INFORMACIÓN
     suspend fun requestMoreInfo(
         reportId: String,
         moderatorId: String,
@@ -362,7 +390,7 @@ class ReportRepository @Inject constructor(
         }
     }
 
-    // ✅ FUNCIÓN PARA OBTENER ESTADÍSTICAS
+    // FUNCIÓN PARA OBTENER ESTADÍSTICAS
     suspend fun getModerationStats(moderatorId: String? = null): Map<String, Any> {
         return try {
             val query = if (moderatorId != null) {
@@ -392,7 +420,7 @@ class ReportRepository @Inject constructor(
         }
     }
 
-    // ✅ FUNCIÓN PRIVADA PARA CREAR HISTORIAL DE MODERACIÓN
+    // FUNCIÓN PRIVADA PARA CREAR HISTORIAL DE MODERACIÓN
     private suspend fun createModerationHistory(
         reportId: String,
         moderatorId: String,
@@ -423,7 +451,6 @@ class ReportRepository @Inject constructor(
         }
     }
 
-    // ✅ FUNCIONES ADICIONALES PARA MODERADOR
     fun getUrgentReports(): Flow<List<Report>> {
         // Si tienes esta función en DAO, úsala. Si no, filtra localmente.
         return database.reportDao().getPendingReports().map { entities ->
@@ -439,7 +466,6 @@ class ReportRepository @Inject constructor(
     }
 
     fun searchReports(searchQuery: String): Flow<List<Report>> {
-        // Implementación básica - si tu DAO no tiene search, filtra localmente
         return database.reportDao().getAllReports().map { entities ->
             entities.filter { entity ->
                 entity.title.contains(searchQuery, ignoreCase = true) ||

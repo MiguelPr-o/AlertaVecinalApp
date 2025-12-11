@@ -1,5 +1,13 @@
 package mx.edu.utng.alertavecinal.ui.components
 
+/*
+Clase CustomTextField: Este componente proporciona un campo de texto
+personalizado y reutilizable para la interfaz de usuario de la aplicación.
+Incluye soporte para íconos, campos de contraseña con visibilidad toggle,
+manejo de errores y múltiples opciones de personalización, ofreciendo
+una experiencia de entrada de datos consistente y accesible en toda la app.
+*/
+
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -37,7 +45,7 @@ fun CustomTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     error: String? = null,
-    isError: Boolean = false // ✅ NUEVO PARÁMETRO AGREGADO
+    isError: Boolean = false
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -93,7 +101,7 @@ fun CustomTextField(
         } else {
             visualTransformation
         },
-        isError = hasError, // ✅ USA EL NUEVO PARÁMETRO
+        isError = hasError,
         supportingText = error?.let {
             { Text(text = it, color = MaterialTheme.colorScheme.error) }
         },

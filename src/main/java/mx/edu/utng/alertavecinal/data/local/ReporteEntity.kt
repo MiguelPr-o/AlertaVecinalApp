@@ -1,5 +1,13 @@
-// ReportEntity.kt
 package mx.edu.utng.alertavecinal.data.local
+
+/*
+Clase ReportEntity: Esta clase define la estructura de un reporte o
+alerta que se almacena localmente en la base de datos del dispositivo.
+Representa la tabla "reports" en SQLite y contiene todos los datos de
+un incidente reportado, incluyendo su ubicación, tipo, estado, imágenes,
+y metadatos de moderación para cuando los administradores revisen o editen
+los reportes.
+ */
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
