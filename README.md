@@ -21,16 +21,16 @@ La aplicación sigue una arquitectura **MVVM + Repository**, garantizando una co
 
 mx.edu.utng.alertavecinal/
 ├── data/
-│   ├── local/          # Room database, DAOs y entidades
-│   ├── model/          # Modelos de dominio y enums
-│   └── repository/     # Implementaciones de repositorios
-├── di/                 # Inyección de dependencias (Hilt)
+│ ├── local/ # Room database, DAOs y entidades
+│ ├── model/ # Modelos de dominio y enums
+│ └── repository/ # Implementaciones de repositorios
+├── di/ # Inyección de dependencias (Hilt)
 ├── ui/
-│   ├── components/     # Componentes reutilizables
-│   ├── navigation/     # Configuración de navegación
-│   └── screens/        # Pantallas de la aplicación
-├── utils/              # Utilidades generales
-└── viewmodel/          # ViewModels
+│ ├── components/ # Componentes reutilizables
+│ ├── navigation/ # Configuración de navegación
+│ └── screens/ # Pantallas de la aplicación
+├── utils/ # Utilidades generales
+└── viewmodel/ # ViewModels
 
 ---
 
