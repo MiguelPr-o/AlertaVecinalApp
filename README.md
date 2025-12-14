@@ -1,5 +1,5 @@
-## 📱 Alerta Vecinal
-# Documentación de Arquitectura del Proyecto
+# 📱 Alerta Vecinal
+## Documentación de Arquitectura del Proyecto
 
 Aplicación móvil para el **reporte y visualización de incidentes en tiempo real**, con enfoque comunitario, moderación y soporte offline.
 
