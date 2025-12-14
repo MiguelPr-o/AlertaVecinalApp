@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Descargar AlertaVecinal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 { text-align: center; }
+    #card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #0056b3; }
+    #count {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+<h1>AlertaVecinal</h1>
+
+<div id="card">
+  <p>App para reportar incidentes en tu comunidad.</p>
+
+  <button id="downloadBtn">Descargar APK</button>
+
+  <p id="count">Cargas registradas: cargando...</p>
+</div>
+
+<script>
+  // CONFIGÚRALO CON TUS DATOS DE FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyDhoZvLd1IlWrSom3eI2wJ4owSwqWMt_Ak",
+  authDomain: "alertaappp.firebaseapp.com",
+  projectId: "alertaappp",
+  storageBucket: "alertaappp.firebasestorage.app",
+  messagingSenderId: "11464769886",
+  appId: "1:11464769886:web:36c98fc148f691355b4fcf",
+  measurementId: "G-J556K4L1RW"
+};
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const countRef = db.ref("descargas_alertavecinal");
+
+  countRef.on("value", (snap) => {
+    document.getElementById("count").innerText = "Descargas registradas: " + snap.val();
+  });
+
+  document.getElementById("downloadBtn").onclick = () => {
+    // incrementa contador
+    countRef.transaction((actual) => (actual || 0) + 1);
+
+    // TU ENLACE DIRECTO AL APK
+    window.location.href = "AlertaVecinalApp.apk";
+  };
+</script>
+
+</body>
+</html>
