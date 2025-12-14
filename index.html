@@ -3,85 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Descargar AlertaVecinal</title>
+  <title>AlertaVecinal | Descarga</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 30px;
-      max-width: 600px;
-      margin: auto;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
     }
-    h1 { text-align: center; }
-    #card {
-      background: white;
+
+    .container {
+      max-width: 420px;
+      width: 100%;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 30px 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 15px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      margin: 10px 0 8px;
+      font-size: 26px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .features {
+      text-align: left;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    .features li {
+      margin-bottom: 8px;
+      list-style: none;
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .features li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      color: #28a745;
+      font-weight: bold;
+    }
+
     button {
       width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 14px;
       font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
     }
-    button:hover { background: #0056b3; }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(0, 123, 255, 0.55);
+    }
+
     #count {
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #888;
     }
   </style>
+
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
 
-<h1>AlertaVecinal</h1>
+  <div class="container">
+    <div class="card">
 
-<div id="card">
-  <p>App para reportar incidentes en tu comunidad.</p>
+      <div class="logo">AV</div>
 
-  <button id="downloadBtn">Descargar APK</button>
+      <h1>AlertaVecinal</h1>
+      <p class="subtitle">Reporta incidentes y mejora la seguridad de tu comunidad</p>
 
-  <p id="count">Cargas registradas: cargando...</p>
-</div>
+      <ul class="features">
+        <li>Reportes rápidos y sencillos</li>
+        <li>Incidentes en tiempo real</li>
+        <li>Apoyo a la seguridad vecinal</li>
+      </ul>
 
-<script>
-  // CONFIGÚRALO CON TUS DATOS DE FIREBASE
-  const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_DOMINIO.firebaseapp.com",
-    databaseURL: "https://TU_DB.firebaseio.com",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_BUCKET.appspot.com",
-    messagingSenderId: "TUSENDERID",
-    appId: "TU_APP_ID"
-  };
+      <button id="downloadBtn">📥 Descargar APK</button>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+      <p id="count">Descargas registradas: cargando...</p>
 
-  const countRef = db.ref("descargas_alertavecinal");
+      <div class="footer">Versión beta · Android</div>
+    </div>
+  </div>
 
-  countRef.on("value", (snap) => {
-    document.getElementById("count").innerText = "Descargas registradas: " + snap.val();
-  });
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhoZvLd1IlWrSom3eI2wJ4owSwqWMt_Ak",
+      authDomain: "alertaappp.firebaseapp.com",
+      projectId: "alertaappp",
+      storageBucket: "alertaappp.firebasestorage.app",
+      messagingSenderId: "11464769886",
+      appId: "1:11464769886:web:36c98fc148f691355b4fcf",
+      measurementId: "G-J556K4L1RW"
+    };
 
-  document.getElementById("downloadBtn").onclick = () => {
-    // incrementa contador
-    countRef.transaction((actual) => (actual || 0) + 1);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    // TU ENLACE DIRECTO AL APK
-    window.location.href = "https://tuservidor.com/alertavecinal.apk";
-  };
-</script>
+    const countRef = db.ref("descargas_alertavecinal");
+
+    countRef.on("value", (snap) => {
+      document.getElementById("count").innerText = "Descargas registradas: " + (snap.val() || 0);
+    });
+
+    document.getElementById("downloadBtn").onclick = () => {
+      countRef.transaction((actual) => (actual || 0) + 1);
+      window.location.href = "AlertaVecinalApp.apk";
+    };
+  </script>
 
 </body>
 </html>
