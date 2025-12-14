@@ -1,5 +1,5 @@
-📱 Alerta Vecinal - Documentación de Arquitectura
-🏗️ Estructura del Proyecto
+📱# Alerta Vecinal - Documentación de Arquitectura
+🏗️ ## Estructura del Proyecto
 📂 Capa de Datos Local (Room Database)
 Clase	Descripción	Responsabilidad
 AppDatabase	Base de datos principal Room	Configuración y acceso a la BD
