@@ -1,211 +1,235 @@
-📱# Alerta Vecinal - Documentación de Arquitectura
-🏗️ ## Estructura del Proyecto
-📂 Capa de Datos Local (Room Database)
-Clase	Descripción	Responsabilidad
-AppDatabase	Base de datos principal Room	Configuración y acceso a la BD
-Converters	Convertidores de tipos para Room	Conversión de tipos complejos
-NotificationDao	Operaciones con notificaciones	CRUD de notificaciones
-NotificationEntity	Entidad de notificaciones	Estructura tabla notifications
-ReportDao	Operaciones con reportes	CRUD y consultas de reportes
-ReportEntity	Entidad de reportes	Estructura tabla reports
-UserDao	Operaciones con usuarios	CRUD de usuarios
-UserEntity	Entidad de usuarios	Estructura tabla users
-📦 Capa de Modelos (Domain Layer)
-Clase	Descripción	Responsabilidad
-Enums.kt	Enumerados del sistema	Constantes y tipos enumerados
-LocationData	Datos de ubicación	Representación de coordenadas
-LocationSelectionState	Estado de selección de ubicación	Gestión de ubicación UI
-MapState	Estado del mapa	Estado del componente mapa
-NotificationPrefs	Preferencias de notificación	Configuración de notificaciones
-Report	Modelo de dominio de reporte	Lógica de negocio reportes
-ReportState	Estado de reportes	Estado UI de reportes
-UiState	Estados genéricos de UI	Patrón de estados UI
-AuthState	Estado de autenticación	Estado de autenticación
-User	Modelo de dominio de usuario	Lógica de negocio usuarios
-🔄 Capa de Repositorios
-Clase	Descripción	Responsabilidad
-AuthRepository	Repositorio de autenticación	Login, registro, logout
-MapRepository	Repositorio de mapas/ubicación	Gestión de ubicación GPS
-ReportRepository	Repositorio de reportes	Operaciones con reportes
-UserRepository	Repositorio de usuarios	Operaciones con usuarios
-💉 Inyección de Dependencias
-Clase	Descripción	Responsabilidad
-AppModule	Módulo principal Dagger Hilt	Configuración de DI
-🎨 Componentes de UI (Compose)
-Clase	Descripción	Responsabilidad
-CustomButtons	Botones personalizados	Componentes de botón reutilizables
-CustomTextField	Campos de texto personalizados	Inputs de formulario
-EmptyState	Estados vacíos	Componentes para datos vacíos
-ErrorMessage	Mensajes de error	Mostrar errores al usuario
-IncidentMarker	Marcadores de mapa	Marcadores personalizados en mapa
-LoadingIndicator	Indicadores de carga	Spinners y loaders
-ModeratorReportCard	Tarjetas para moderador	Tarjetas especiales moderación
-ReportActionsModal	Modales de acciones	Diálogos de moderación
-ReportFilter	Filtros de reportes	Componente de filtrado
-🧭 Navegación
-Clase	Descripción	Responsabilidad
-AppNavigation	Navegación principal	Gestión de rutas y navegación
-📱 Pantallas (Screens)
-Clase	Descripción	Responsabilidad
-CreateReportScreen	Crear reporte	Formulario de creación
-LoginScreen	Inicio de sesión	Autenticación de usuarios
-MapScreen	Mapa principal	Vista de mapa con incidentes
-ModeratorDashboardScreen	Panel de moderador	Dashboard para moderadores
-ModeratorReportReviewScreen	Revisión de reportes	Pantalla de moderación detallada
-PendingReportsScreen	Reportes pendientes	Lista de reportes por revisar
-ProfileScreen	Perfil de usuario	Perfil y configuración
-RegisterScreen	Registro	Creación de cuenta
-ReportDetailScreen	Detalles de reporte	Vista detallada de reporte
-SelectLocationScreen	Selección de ubicación	Mapa para elegir ubicación
-WelcomeScreen	Pantalla de bienvenida	Pantalla inicial
-🔧 Utilidades (Utils)
-Clase	Descripción	Responsabilidad
-Constants	Constantes globales	Configuración y constantes
-FormatUtils	Utilidades de formato	Formateo de fechas, textos
-ImageUtils	Utilidades de imágenes	Procesamiento de imágenes
-LocationUtils	Utilidades de ubicación	Cálculos geográficos
-NetworkUtils	Utilidades de red	Gestión de conectividad
-NotificationUtils	Utilidades de notificaciones	Gestión de notificaciones push
-🛠️ Tecnologías Utilizadas
-Tecnología	Versión	Uso
-Kotlin	1.9+	Lenguaje principal
-Jetpack Compose	1.5+	UI declarativa
-Room	2.6+	Base de datos local
-Firebase	32.0+	Backend (Auth, Firestore, Storage)
-Dagger Hilt	2.48+	Inyección de dependencias
-Coroutines	1.7+	Programación asíncrona
-Google Maps	18.2+	Mapas y ubicación
-Coil	2.4+	Carga de imágenes
-📊 Diagrama de Arquitectura
-text
-┌─────────────────────────────────────────────────┐
-│                 UI Layer (Compose)               │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐           │
-│  │ Screens │ │Componen-│ │Navigation│           │
-│  │ (11)    │ │ ts (9)  │ │   (1)    │           │
-│  └─────────┘ └─────────┘ └─────────┘           │
-└─────────────────┬───────────────────────────────┘
-                  │ ViewModel Calls
-┌─────────────────────────────────────────────────┐
-│             Presentation Layer                   │
-│  ┌─────────────────────────────────────────┐    │
-│  │           ViewModels                    │    │
-│  │  (Auth, Report, Map, User, Moderator)  │    │
-│  └─────────────────────────────────────────┘    │
-└─────────────────┬───────────────────────────────┘
-                  │ Repository Calls
-┌─────────────────────────────────────────────────┐
-│              Domain Layer                        │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐           │
-│  │ Models  │ │Enums    │ │ States  │           │
-│  │ (10)    │ │ (1)     │ │ (4)     │           │
-│  └─────────┘ └─────────┘ └─────────┘           │
-└─────────────────┬───────────────────────────────┘
-                  │ Data Operations
-┌─────────────────────────────────────────────────┐
-│              Data Layer                          │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐           │
-│  │Repositor│ │ Room    │ │ Firebase│           │
-│  │ ies (4) │ │ (8)     │ │   -     │           │
-│  └─────────┘ └─────────┘ └─────────┘           │
-└─────────────────┬───────────────────────────────┘
-                  │ DI Configuration
-┌─────────────────────────────────────────────────┐
-│           Dependency Injection                   │
-│  ┌─────────────────────────────────────────┐    │
-│  │           AppModule (1)                 │    │
-│  │  (Hilt Module with all dependencies)    │    │
-│  └─────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────┘
-🚀 Características Principales
-👥 Para Usuarios
-📍 Reporte de incidentes en tiempo real
+## 📱 Alerta Vecinal
+# Documentación de Arquitectura del Proyecto
 
-🗺️ Visualización en mapa interactivo
+Aplicación móvil para el **reporte y visualización de incidentes en tiempo real**, con enfoque comunitario, moderación y soporte offline.
 
-🔔 Notificaciones de incidentes cercanos
+---
 
-👤 Perfil personalizado con historial
+## 🏗️ Arquitectura General
 
-🛡️ Para Moderadores
-📋 Panel de control dedicado
+La aplicación sigue una arquitectura **MVVM + Repository**, garantizando una correcta separación de responsabilidades:
 
-⚡ Revisión y aprobación de reportes
+- **UI Layer** → Jetpack Compose  
+- **Presentation Layer** → ViewModels  
+- **Domain Layer** → Modelos y estados  
+- **Data Layer** → Room + Firebase  
+- **DI Layer** → Dagger Hilt  
 
-📊 Estadísticas y métricas
+---
 
-✏️ Edición de reportes existentes
+## 📂 Estructura del Proyecto
 
-🔧 Técnicas
-🔄 Sincronización bidireccional (Firebase ↔ Room)
-
-📱 Funcionalidad offline completa
-
-🎨 UI moderna con Material Design 3
-
-🔐 Autenticación segura con Firebase Auth
-
-📁 Estructura de Paquetes
-text
 mx.edu.utng.alertavecinal/
 ├── data/
-│   ├── local/          # Room database entities & DAOs
-│   ├── model/          # Domain models & enums
-│   └── repository/     # Repository implementations
-├── di/                 # Dependency injection
+│   ├── local/          # Room database, DAOs y entidades
+│   ├── model/          # Modelos de dominio y enums
+│   └── repository/     # Implementaciones de repositorios
+├── di/                 # Inyección de dependencias (Hilt)
 ├── ui/
-│   ├── components/     # Reusable UI components
-│   ├── navigation/     # Navigation configuration
-│   └── screens/        # All application screens
-├── utils/              # Utility classes
+│   ├── components/     # Componentes reutilizables
+│   ├── navigation/     # Configuración de navegación
+│   └── screens/        # Pantallas de la aplicación
+├── utils/              # Utilidades generales
 └── viewmodel/          # ViewModels
-🔐 Permisos Requeridos
-xml
-<!-- AndroidManifest.xml -->
+
+---
+
+## 📂 Capa de Datos Local (Room)
+
+| Clase | Descripción | Responsabilidad |
+|------|------------|----------------|
+| AppDatabase | Base de datos Room | Configuración y acceso |
+| Converters | Convertidores de tipos | Manejo de tipos complejos |
+| NotificationDao | DAO de notificaciones | CRUD de notificaciones |
+| NotificationEntity | Entidad de notificaciones | Tabla `notifications` |
+| ReportDao | DAO de reportes | CRUD y consultas |
+| ReportEntity | Entidad de reportes | Tabla `reports` |
+| UserDao | DAO de usuarios | CRUD de usuarios |
+| UserEntity | Entidad de usuarios | Tabla `users` |
+
+---
+
+## 📦 Capa de Modelos (Domain Layer)
+
+| Clase | Descripción |
+|------|------------|
+| Enums.kt | Enumeraciones del sistema |
+| LocationData | Datos de ubicación |
+| LocationSelectionState | Estado de selección |
+| MapState | Estado del mapa |
+| NotificationPrefs | Preferencias |
+| Report | Modelo de dominio |
+| ReportState | Estado de reportes |
+| UiState | Estados genéricos |
+| AuthState | Estado de autenticación |
+| User | Modelo de usuario |
+
+---
+
+## 🔄 Repositorios
+
+| Repositorio | Función |
+|------------|--------|
+| AuthRepository | Autenticación |
+| MapRepository | Ubicación y GPS |
+| ReportRepository | Gestión de reportes |
+| UserRepository | Gestión de usuarios |
+
+---
+
+## 💉 Inyección de Dependencias
+
+| Clase | Función |
+|------|--------|
+| AppModule | Configuración de Dagger Hilt |
+
+---
+
+## 🎨 Componentes UI (Compose)
+
+| Componente | Función |
+|-----------|--------|
+| CustomButtons | Botones reutilizables |
+| CustomTextField | Campos de texto |
+| EmptyState | Estados vacíos |
+| ErrorMessage | Mensajes de error |
+| IncidentMarker | Marcadores en mapa |
+| LoadingIndicator | Indicadores de carga |
+| ModeratorReportCard | Tarjetas de moderación |
+| ReportActionsModal | Modales |
+| ReportFilter | Filtros |
+
+---
+
+## 🧭 Navegación
+
+| Clase | Función |
+|------|--------|
+| AppNavigation | Rutas y navegación |
+
+---
+
+## 📱 Pantallas
+
+| Pantalla | Función |
+|---------|--------|
+| WelcomeScreen | Pantalla inicial |
+| LoginScreen | Inicio de sesión |
+| RegisterScreen | Registro |
+| MapScreen | Mapa principal |
+| CreateReportScreen | Crear reporte |
+| ReportDetailScreen | Detalles |
+| SelectLocationScreen | Selección de ubicación |
+| ProfileScreen | Perfil |
+| ModeratorDashboardScreen | Panel de moderador |
+| PendingReportsScreen | Reportes pendientes |
+| ModeratorReportReviewScreen | Revisión de reportes |
+
+---
+
+## 🔧 Utilidades
+
+| Clase | Función |
+|------|--------|
+| Constants | Constantes globales |
+| FormatUtils | Formateo |
+| ImageUtils | Imágenes |
+| LocationUtils | Ubicación |
+| NetworkUtils | Conectividad |
+| NotificationUtils | Notificaciones |
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+| Tecnología | Uso |
+|-----------|----|
+| Kotlin | Lenguaje principal |
+| Jetpack Compose | UI declarativa |
+| Room | Base de datos local |
+| Firebase | Auth, Firestore, Storage |
+| Dagger Hilt | Inyección de dependencias |
+| Coroutines | Asincronía |
+| Google Maps | Mapas |
+| Coil | Carga de imágenes |
+
+---
+
+## 📊 Diagrama de Arquitectura
+
+UI (Compose)
+   ↓
+ViewModels (Presentation)
+   ↓
+Domain (Models & States)
+   ↓
+Repositories
+   ↓
+Room Database / Firebase
+
+---
+
+## 🚀 Características
+
+### 👥 Usuarios
+- Reporte de incidentes en tiempo real
+- Mapa interactivo
+- Notificaciones cercanas
+- Perfil con historial
+
+### 🛡️ Moderadores
+- Panel de control
+- Revisión de reportes
+- Estadísticas
+- Edición de reportes
+
+### 🔧 Técnicas
+- Sincronización Firebase ↔ Room
+- Funcionalidad offline
+- Material Design 3
+- Autenticación segura
+
+---
+
+## 🔐 Permisos
+
+```xml
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-📈 Métricas del Proyecto
-Total de clases: 52
 
-Líneas de código aproximadas: ~8,000
+---
 
-Pantallas principales: 11
+## 📈 Métricas del Proyecto
 
-Componentes reutilizables: 9
+- **Clases:** 52  
+- **Líneas de código:** ~8,000  
+- **Pantallas:** 11  
+- **Componentes reutilizables:** 9  
+- **Repositorios:** 4  
+- **Utilidades:** 6  
 
-Repositorios: 4
+---
 
-Utilidades: 6
+## 🎯 Patrones de Diseño Implementados
 
-🎯 Patrones de Diseño Implementados
-Patrón	Implementación	Beneficio
-MVVM	View + ViewModel + Model	Separación de responsabilidades
-Repository	Repositorios por entidad	Abstracción de fuente de datos
-Singleton	AppDatabase, ViewModels	Una instancia global
-Factory	Dagger Hilt modules	Inyección de dependencias
-Observer	StateFlow/LiveData	Actualización reactiva de UI
-🛡️ Consideraciones de Seguridad
-Autenticación: Firebase Authentication con email/password
+- **MVVM**  
+- **Repository**  
+- **Singleton**  
+- **Factory (Dagger Hilt)**  
+- **Observer (StateFlow)**  
 
-Autorización: Roles de usuario (Usuario, Moderador, Admin)
+---
 
-Validación: Validación en cliente y servidor
+## 🔥 Configuración de Firebase
 
-Permisos: Solicitud granular de permisos en runtime
+- **Authentication:** Email / Password  
+- **Firestore:** `users`, `reports`, `notifications`  
+- **Storage:** Imágenes de reportes  
+- **Rules:** Seguridad basada en roles  
 
-Cifrado: Room encryption disponible si se requiere
-
-📲 Configuración de Firebase
-Authentication: Habilitado (Email/Password)
-
-Firestore: Colecciones: users, reports, notifications
-
-Storage: Bucket para imágenes de reportes
-
-Rules: Configuración segura por roles
-
+---
 
