@@ -55,15 +55,15 @@
 
 <script>
   // CONFIGÚRALO CON TUS DATOS DE FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyDhoZvLd1IlWrSom3eI2wJ4owSwqWMt_Ak",
-  authDomain: "alertaappp.firebaseapp.com",
-  projectId: "alertaappp",
-  storageBucket: "alertaappp.firebasestorage.app",
-  messagingSenderId: "11464769886",
-  appId: "1:11464769886:web:36c98fc148f691355b4fcf",
-  measurementId: "G-J556K4L1RW"
-};
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_DOMINIO.firebaseapp.com",
+    databaseURL: "https://TU_DB.firebaseio.com",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_BUCKET.appspot.com",
+    messagingSenderId: "TUSENDERID",
+    appId: "TU_APP_ID"
+  };
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
@@ -79,7 +79,7 @@ const firebaseConfig = {
     countRef.transaction((actual) => (actual || 0) + 1);
 
     // TU ENLACE DIRECTO AL APK
-    window.location.href = "AlertaVecinalApp.apk";
+    window.location.href = "https://tuservidor.com/alertavecinal.apk";
   };
 </script>
 
