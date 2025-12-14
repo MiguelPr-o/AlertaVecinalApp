@@ -19,7 +19,7 @@ La aplicación sigue una arquitectura **MVVM + Repository**, garantizando una co
 
 ## 📂 Estructura del Proyecto
 
-mx.edu.utng.alertavecinal/
+```mx.edu.utng.alertavecinal/
 ├── data/
 │ ├── local/ # Room database, DAOs y entidades
 │ ├── model/ # Modelos de dominio y enums
@@ -31,6 +31,7 @@ mx.edu.utng.alertavecinal/
 │ └── screens/ # Pantallas de la aplicación
 ├── utils/ # Utilidades generales
 └── viewmodel/ # ViewModels
+```
 
 ---
 
