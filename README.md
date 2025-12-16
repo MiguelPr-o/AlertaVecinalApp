@@ -254,7 +254,3 @@ Configuración del backend en Firebase utilizado por la aplicación.
 - **Rules:** Seguridad basada en roles  
 
 ---
-
-## 📁 DESGLOSE COMPLETO DE CLASES (52 CLASES)
-## 🎯 CAPA DE DATOS LOCAL (ROOM DATABASE) - 8 Clases
-### AppDatabase - Base de datos principal Room
