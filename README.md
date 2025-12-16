@@ -255,6 +255,6 @@ Configuración del backend en Firebase utilizado por la aplicación.
 
 ---
 
-📁 ## DESGLOSE COMPLETO DE CLASES (52 CLASES)
-🎯 ## CAPA DE DATOS LOCAL (ROOM DATABASE) - 8 Clases
+## 📁 DESGLOSE COMPLETO DE CLASES (52 CLASES)
+## 🎯 CAPA DE DATOS LOCAL (ROOM DATABASE) - 8 Clases
 ### AppDatabase - Base de datos principal Room
