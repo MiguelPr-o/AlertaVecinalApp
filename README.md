@@ -9,7 +9,7 @@ Aplicación móvil para el **reporte y visualización de incidentes en tiempo re
 Explicación: Antes de construir una casa necesitas los materiales correctos. En Android Studio, necesitamos configurar nuestro proyecto con las "herramientas" adecuadas.
 
 ## Configuración del archivo build.gradle.kts (Module:app)
-```
+```kotlin
 import java.util.Properties
 
 plugins {
@@ -176,7 +176,7 @@ kapt {
 ```
 
 ## Configuración del archivo AndroidManifest
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -283,7 +283,7 @@ abstract class AppDatabase : RoomDatabase() {
 ### Paso 1.2: Converters - Convertidores de tipos
 Estos convertidores son como traductores que transforman tipos de datos complejos (como enums o listas) en un "idioma" que SQLite entienda (String o Int).
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 import androidx.room.TypeConverter
@@ -345,7 +345,7 @@ class Converters {
 Analogía: Cada notificación es como una carta registrada que llega al buzón, con remitente, destinatario, fecha y contenido.
 
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -378,7 +378,7 @@ data class NotificationEntity(
 ### Paso 1.4: NotificationDao - Operaciones con notificaciones
 Analogía: Es como el sistema de clasificación del correo: ordena por fecha, busca por tipo, marca como leído.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -432,7 +432,7 @@ interface NotificationDao {
 ### Paso 1.5: ReportEntity - Entidad de reportes
 Explicación detallada: Esta tabla almacena todos los reportes de incidentes, similar a un expediente policial con fotos, ubicación y estado.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -525,7 +525,7 @@ fun ReportEntity.updateWithModerationData(
 ### Paso 1.6: ReportDao - Operaciones con reportes
 Analogía: Como un archivista experto que puede buscar expedientes por múltiples criterios: fecha, tipo, estado, etc.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -662,7 +662,7 @@ interface ReportDao {
 ### Paso 1.7: UserEntity - Entidad de usuarios
 Explicación detallada: El perfil del usuario almacenado localmente para acceso rápido sin conexión.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -731,7 +731,7 @@ fun mx.edu.utng.alertavecinal.data.model.User.toEntity(): UserEntity {
 ### Paso 1.8: UserDao - Operaciones con usuarios
 Analogía: El carné de identidad digital del usuario, siempre accesible incluso sin conexión a internet.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.local
 
 /*
@@ -782,7 +782,7 @@ interface UserDao {
 ### Paso 2.1: Enums.kt - Todos los enumerados
 Explicación detallada: Archivo centralizado que define todos los tipos constantes, como un diccionario de términos oficiales de la aplicación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -898,7 +898,7 @@ enum class ReportPriority {
 ## Paso 2.2: Report - Modelo de dominio
 Analogía: La "tarjeta de incidente" completa que circula por toda la app, con métodos inteligentes que saben cómo presentarse.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -979,7 +979,7 @@ fun Report.toEntityModel(): mx.edu.utng.alertavecinal.data.local.ReportEntity {
 ### Paso 2.3: LocationData - Datos de ubicación
 Explicación detallada: Representa una ubicación geográfica con métodos de utilidad para cálculos.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -1023,7 +1023,7 @@ data class LocationData(
 ### Paso 2.4: User - Modelo de dominio de usuario
 Analogía: El perfil completo del usuario que incluye tanto datos personales como preferencias.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -1051,7 +1051,7 @@ data class User(
 ### Paso 2.5: AuthState - Estado de autenticación
 Explicación detallada: Clase sellada que representa todos los posibles estados del flujo de autenticación.
 
-```
+```kotlin
 /*
 Clase AuthState: Esta clase representa el estado de autenticación
 del usuario, almacenando información sobre si el usuario está
@@ -1070,7 +1070,7 @@ data class AuthState(
 ### Paso 2.6: ReportState - Estado de reportes
 Analogía: Como el tablero de control de un editor de periódico, muestra qué reportes hay, cuáles están filtrados, y si hay errores.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -1095,7 +1095,7 @@ data class ReportState(
 ### Paso 2.7: UiState - Estados genéricos de UI
 Explicación detallada: Patrón reutilizable para manejar estados de carga, éxito y error en cualquier pantalla.
 
-```
+```kotlin
 /*
 Clase UiState: Esta es una clase sellada que representa los posibles
 estados de la interfaz de usuario para operaciones asíncronas:
@@ -1113,7 +1113,7 @@ sealed class UiState<out T> {
 ### Paso 2.8: MapState - Estado del mapa
 Analogía: Como el panel de control de un piloto de drones: muestra ubicación, reportes visibles, y estado de conexión.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 import com.google.android.gms.maps.model.LatLng
@@ -1141,7 +1141,7 @@ data class MapState(
 ### Paso 2.9: NotificationPrefs - Preferencias de notificación
 Explicación detallada: Configuración personalizable de qué notificaciones quiere recibir el usuario y cuándo.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.model
 
 /*
@@ -1173,7 +1173,7 @@ data class NotificationPrefs(
 ### Paso 3.1: ReportRepository - Repositorio de reportes
 Analogía: El centro de operaciones que coordina entre Firebase (nube), Room (local) y Storage (imágenes).
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.repository
 
 /*
@@ -1656,7 +1656,7 @@ class ReportRepository @Inject constructor(
 ### Paso 3.2: AuthRepository - Repositorio de autenticación
 Explicación detallada: Gestiona todo el ciclo de vida del usuario: registro, login, logout y recuperación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.repository
 
 /*
@@ -1912,7 +1912,7 @@ class AuthRepository @Inject constructor(
 ### Paso 3.3: MapRepository - Repositorio de mapas/ubicación
 Analogía: Como un navegador GPS que obtiene ubicación, calcula rutas y gestiona permisos.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.repository
 
 /*
@@ -2114,7 +2114,7 @@ class MapRepository @Inject constructor(
 ### Paso 3.4: UserRepository - Repositorio de usuarios
 Explicación detallada: Gestiona todas las operaciones del perfil de usuario y sincronización de preferencias.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.data.repository
 
 /*
@@ -2283,7 +2283,7 @@ class UserRepository @Inject constructor(
 ### Paso 4.1: AppModule - Módulo principal Dagger Hilt
 Analogía: Como el director de casting de una película: decide qué actor (instancia) interpreta cada papel (dependencia).
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.di
 
 /*
@@ -2396,7 +2396,7 @@ object AppModule {
 ### Paso 5.1: CustomButtons - Botones personalizados
 Analogía: Como un set de botones de control de una consola de mezcla, cada uno con función y apariencia específica.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -2730,7 +2730,7 @@ enum class IconPosition {
 ### Paso 5.2: CustomTextField - Campos de texto
 Explicación detallada: Campos de entrada con validación integrada y diferentes modos (normal, contraseña, búsqueda).
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -2858,7 +2858,7 @@ fun CustomTextField(
 ### Paso 5.3: IncidentMarker - Marcadores de mapa
 Analogía: Como las chinchetas de colores en un mapa físico, cada color representa un tipo diferente de incidente.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -2910,7 +2910,7 @@ fun IncidentMarker(
 ### Paso 5.4: ReportFilter - Filtros de reportes
 Explicación detallada: Componente tipo "chips" que permite filtrar reportes por categoría de forma intuitiva.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -2999,7 +2999,7 @@ fun FilterChip(
 ### Paso 5.5: LoadingIndicator - Indicadores de carga
 Analogía: Como las luces intermitentes de "cargando" en diferentes dispositivos, cada una para un contexto específico.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -3072,7 +3072,7 @@ fun LoadingDialog(
 ### Paso 5.6: ErrorMessage - Mensajes de error
 Explicación detallada: Componente estandarizado para mostrar errores de forma amigable y consistente.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -3116,7 +3116,7 @@ fun ErrorMessage(message: String) {
 ### Paso 5.7: EmptyState - Estados vacíos
 Analogía: Como las páginas "No hay resultados" en un catálogo, que guían al usuario sobre qué hacer a continuación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -3216,7 +3216,7 @@ fun NoPendingReportsState(
 ### Paso 5.8: ModeratorReportCard - Tarjetas para moderador
 Explicación detallada: Vista especializada para moderadores con información detallada y controles de acción.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -3467,7 +3467,7 @@ fun formatReportType(reportType: ReportType): String {
 ### Paso 5.9: ReportActionsModal - Modales de acciones
 Analogía: Como los paneles de control de un editor de video, con opciones específicas para cada acción de moderación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.components
 
 /*
@@ -3741,7 +3741,7 @@ fun ConfirmDeleteModal(
 ### Paso 6.1: AppNavigation - Navegación principal
 Analogía: Como el sistema de metro de una ciudad, define todas las rutas posibles, conexiones y restricciones de acceso.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.navigation
 
 /*
@@ -4046,7 +4046,7 @@ fun getStartDestinationByRole(userRole: String?): String {
 ### Paso 7.1: WelcomeScreen - Pantalla de bienvenida
 Analogía: Como la recepción de un hotel, da la bienvenida y presenta las opciones principales de acceso.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -4166,7 +4166,7 @@ fun WelcomeScreenPreview() {
 ### Paso 7.2: LoginScreen - Inicio de sesión
 Explicación detallada: Pantalla de autenticación con validación en tiempo real y manejo de diferentes escenarios.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -4527,7 +4527,7 @@ fun LoginScreenPreview() {
 ### Paso 7.3: MapScreen - Mapa principal
 Analogía: Como el tablero de control de una central de emergencias, muestra todos los incidentes en tiempo real.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -4900,7 +4900,7 @@ fun MapScreenPreview() {
 ### Paso 7.4: CreateReportScreen - Crear reporte
 Explicación detallada: Formulario completo con validación, selección de ubicación y carga de imágenes.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -5499,7 +5499,7 @@ fun CreateReportScreenPreview() {
 ### Paso 7.5: ReportDetailScreen - Detalles de reporte
 Analogía: Como el expediente completo de un caso policial, muestra toda la información relevante en un solo lugar.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 import androidx.compose.foundation.background
@@ -6242,7 +6242,7 @@ private fun ModerationHistorySection(report: mx.edu.utng.alertavecinal.data.mode
 ### Paso 7.6: ModeratorDashboardScreen - Panel de moderador
 Explicación detallada: Dashboard especializado con estadísticas en tiempo real y herramientas de moderación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -6931,7 +6931,7 @@ enum class ModeratorTab(
 ### Paso 7.7: ProfileScreen - Perfil de usuario
 Analogía: Como el perfil de un usuario en una red social, muestra información personal, estadísticas y configuraciones.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.ui.screens
 
 /*
@@ -7585,7 +7585,7 @@ fun ProfileScreenPreview() {
 ### Paso 8.1: Constants - Constantes globales
 Analogía: Como el manual de procedimientos de una empresa, define todas las reglas y configuraciones estándar.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
@@ -7715,7 +7715,7 @@ object Constants {
 ### Paso 8.2: FormatUtils - Utilidades de formato
 Explicación detallada: Biblioteca de funciones para formatear datos de manera consistente en toda la aplicación.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
@@ -7855,7 +7855,7 @@ object FormatUtils {
 ### Paso 8.3: ImageUtils - Utilidades de imágenes
 Analogía: Como el laboratorio de fotografía de un periódico, procesa y optimiza imágenes para diferentes usos.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
@@ -8010,7 +8010,7 @@ object ImageUtils {
 ### Paso 8.4: LocationUtils - Utilidades de ubicación
 Explicación detallada: Herramientas para cálculos geográficos y procesamiento de ubicaciones.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
@@ -8122,7 +8122,7 @@ object LocationUtils {
 ### Paso 8.5: NetworkUtils - Utilidades de red
 Analogía: Como el monitor de tráfico de red de un administrador de sistemas.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
@@ -8227,7 +8227,7 @@ object NetworkUtils {
 ### Paso 8.6: NotificationUtils - Utilidades de notificaciones
 Explicación detallada: Sistema completo para gestionar notificaciones push, canales y envíos.
 
-```
+```kotlin
 package mx.edu.utng.alertavecinal.utils
 
 /*
