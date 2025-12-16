@@ -254,3 +254,118 @@ Configuración del backend en Firebase utilizado por la aplicación.
 - **Rules:** Seguridad basada en roles  
 
 ---
+
+## 🗄️ CAPA DE DATOS LOCAL (ROOM DATABASE) - 8 Clases
+### Paso 1.1: AppDatabase - Base de datos principal
+Analogía: Es como la bóveda principal del banco. Todas las demás tablas (cajas de seguridad) están contenidas aquí.
+
+```
+package mx.edu.utng.alertavecinal.data.local
+
+// CLASE PRINCIPAL DE BASE DE DATOS DE LA APLICACIÓN
+// Esta clase define y gestiona la base de datos local de la app "Alerta Vecinal"
+// Utiliza Room Persistence Library para almacenar datos de usuarios, reportes y notificaciones
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+
+@Database(
+    entities = [
+        UserEntity::class,
+        ReportEntity::class,
+        NotificationEntity::class
+    ],
+    version = 2,
+    exportSchema = false
+)
+@TypeConverters(Converters::class)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun userDao(): UserDao
+    abstract fun reportDao(): ReportDao
+    abstract fun notificationDao(): NotificationDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "alerta_vecinal_db"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
+```
+
+### Paso 1.2: Converters - Convertidores de tipos
+Explicación detallada: Estos convertidores son como traductores que transforman tipos de datos complejos (como enums o listas) en un "idioma" que SQLite entienda (String o Int).
+
+```
+package mx.edu.utng.alertavecinal.data.local
+
+import androidx.room.TypeConverter
+import mx.edu.utng.alertavecinal.data.model.ReportStatus
+import mx.edu.utng.alertavecinal.data.model.ReportType
+import mx.edu.utng.alertavecinal.data.model.UserRole
+
+// Clase Converters: Sirve como un convertidor de tipos para la base de datos
+// Room. Transforma tipos de datos complejos y personalizados de la aplicación
+// (como enumeraciones y listas) en formatos simples que SQLite puede almacenar
+// (cadenas de texto) y viceversa, permitiendo que Room persista estos objetos
+// especiales directamente en la base de datos.
+
+class Converters {
+
+    @TypeConverter
+    fun fromReportType(type: ReportType): String {
+        return type.name
+    }
+
+    @TypeConverter
+    fun toReportType(name: String): ReportType {
+        return ReportType.valueOf(name)
+    }
+
+    @TypeConverter
+    fun fromReportStatus(status: ReportStatus): String {
+        return status.name
+    }
+
+    @TypeConverter
+    fun toReportStatus(name: String): ReportStatus {
+        return ReportStatus.valueOf(name)
+    }
+
+    @TypeConverter
+    fun fromUserRole(role: UserRole): String {
+        return role.name
+    }
+
+    @TypeConverter
+    fun toUserRole(name: String): UserRole {
+        return UserRole.valueOf(name)
+    }
+
+    @TypeConverter
+    fun fromStringList(list: List<String>): String {
+        return list.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toStringList(data: String): List<String> {
+        return if (data.isEmpty()) emptyList() else data.split(",")
+    }
+}
+```
