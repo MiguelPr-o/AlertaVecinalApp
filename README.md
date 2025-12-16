@@ -219,14 +219,6 @@ Permisos requeridos por la aplicación para su correcto funcionamiento.
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 ```
-```xml
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-```
 
 ---
 
@@ -267,7 +259,8 @@ Configuración del backend en Firebase utilizado por la aplicación.
 ### Paso 1.1: AppDatabase - Base de datos principal
 Analogía: Es como la bóveda principal del banco. Todas las demás tablas (cajas de seguridad) están contenidas aquí.
 
-```package mx.edu.utng.alertavecinal.data.local
+```xml
+package mx.edu.utng.alertavecinal.data.local
 
 // CLASE PRINCIPAL DE BASE DE DATOS DE LA APLICACIÓN
 // Esta clase define y gestiona la base de datos local de la app "Alerta Vecinal"
