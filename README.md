@@ -280,7 +280,7 @@ import androidx.room.TypeConverters
     ],
     version = 2,
     exportSchema = false
-)
+)   
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
